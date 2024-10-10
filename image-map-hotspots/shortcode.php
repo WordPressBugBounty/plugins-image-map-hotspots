@@ -29,7 +29,7 @@ include imh_6310_plugin_url . "output-css.php";
 ?>
 <style>.imh-6310-point-icons{display: none}</style>
 <div class="imh-6310-annotation-box imh-6310-annotation-box-<?php echo $ids; ?>" data-id="<?php echo $ids; ?>">
-   <img src="<?php echo isset($cssData['main_image']) ? $cssData['main_image'] : '' ?>" class="imh-6310-main-image imh-6310-img"  data-imh-cls="imh-6310-main-image imh-6310-img" data-imh-value="<?php echo isset($cssData['main_image']) ? $cssData['main_image'] : '' ?>"  />
+   <img src="<?php echo isset($cssData['main_image']) ? $cssData['main_image'] : '' ?>" class="imh-6310-main-image imh-6310-img"  data-imh-cls="imh-6310-main-image imh-6310-img" data-imh-value="<?php echo isset($cssData['main_image']) ? $cssData['main_image'] : '' ?>" alt="<?php echo esc_attr($styledata['name']) ?>"  />
    <?php
    if ($jsonData) {    
  
