@@ -20,10 +20,15 @@ if (!defined('ABSPATH'))
          });
 
          jQuery('body').on('click', '#export-image-map-hotspot-data', function(){
-            if (!confirm("Do you want to export service box full plugin?")){
+            var url = jQuery('#export-image-map-hotspot-plugin').attr('href');
+            if(url == '#'){
+               alert('No data available for export. Please create and configure the shortcode first before attempting to export the data.');
+               return;
+            }
+            else if (!confirm("Do you want to export the Image hotspot - Map image annotation full plugin data?")){
                return false;
             } else{
-               window.open(jQuery('#export-image-map-hotspot-plugin').attr('href'), '_blank');
+               window.open(url, '_blank');
             }
          });
 

@@ -3,7 +3,7 @@ Contributors: WpMart
 Tags: image hotspot, image hotspots, hotspot picture, hotspot image, hotspot image wordpress, wordpress image hotspot plugin
 Requires at least: 5.4
 Tested up to: 6.6
-Stable tag: 2.3
+Stable tag: 2.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,9 @@ Yes, You can override the existing styles class by your custom CSS properties.
 
 
 == Changelog ==
+= 2.4 =
+* Fixed data export/import issue
+
 = 2.3 =
 * Alt tag added
 

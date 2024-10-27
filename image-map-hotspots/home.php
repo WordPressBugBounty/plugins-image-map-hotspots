@@ -33,7 +33,7 @@ if (!empty($_POST['duplicate']) && isset($_POST['id']) && is_numeric($_POST['id'
 
 ?>
 
-<h3>Image Map Annotation/Hotspot</h3>
+<h3 style="display: flex; width: 100%;">Image Map Annotation/Hotspot</h3>
 <button class="imh-6310-btn-success imh-6310-add-new-button"><a href="<?php echo admin_url("admin.php?page=imh-6310-image-map-hotspot&action=preview") ?>">Add New</a></button>
 
 <table class="imh-6310-table">

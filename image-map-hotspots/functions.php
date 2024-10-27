@@ -1839,29 +1839,37 @@ function imh_6310_add_new_media($id, $results = [])
          return;
        }
       global $wpdb;
-
-		$style_table = $wpdb->prefix . 'imh_6310_style';      
-
+      
       $path = wp_upload_dir();
-      $txtName = 'ima-item-' . time() . '.txt';
-      $file = $path['path'] . '/' . $txtName; 
-      $fp = fopen( $file, "w" ); 
-      $sqlData = "!@#$$#@!";   
-   
-      //style Table
-      $data = $wpdb->get_results('SELECT * FROM ' . $style_table . ' ORDER BY id DESC', ARRAY_A);
-      foreach ( $data as $selectedData ) {
+      $name =  '/' . $wpdb->prefix . 'image-map-hotspot-backup.txt';
+      $fileName = $path['path'] . $name;
+      
+      $table_name = $wpdb->prefix . 'imh_6310_style';
+      $data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
 
-         $sqlData .= 
-               "insert into {$style_table} set 
-               id='".esc_sql($selectedData['id'])."',
-               name='".esc_sql($selectedData['name'])."', 
-               css='".esc_sql($selectedData['css'])."'!@#$$#@!";		
+      if (!empty($data)) {
+         $file_content = '';
+
+         // SQL to drop and create the table
+         $file_content .= "DROP TABLE IF EXISTS `$table_name`;\n";
+         $create_table_query = $wpdb->get_row("SHOW CREATE TABLE `$table_name`", ARRAY_N);
+         $file_content .= $create_table_query[1] . ";\n\n";
+
+         // Insert data rows into the file
+         foreach ($data as $row) {
+               $values = array_map(function($value) use ($wpdb) {
+                  return isset($value) ? "'" . $wpdb->_real_escape($value) . "'" : "NULL";
+               }, $row);
+               $file_content .= "INSERT INTO `$table_name` (" . implode(", ", array_keys($row)) . ") VALUES (" . implode(", ", $values) . ");\n";
+         }
+
+         // Save the SQL statements to a file
+         file_put_contents($fileName, $file_content);
+         echo '<a href="'. $path['url'].$name .'" target="_blank" id="export-image-map-hotspot-plugin">Download</a>';
       }
-      fwrite($fp, pack("CCC",0xef,0xbb,0xbf)); 
-		fwrite($fp, $sqlData);				
-		fclose($fp);
-		echo '<a href="'.$path['url'].'/'.$txtName.'" target="_blank" id="export-image-map-hotspot-plugin">Download</a>';
+      else{
+         echo '<a href="#" id="export-image-map-hotspot-plugin">Download</a>';
+      }
    }
    
    function imh_6310_import_full_plugin($url) {
