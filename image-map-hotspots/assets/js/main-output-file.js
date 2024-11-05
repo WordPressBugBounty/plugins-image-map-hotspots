@@ -28,7 +28,7 @@ window.addEventListener("load", function () {
       clearTimeout(ima6310Timeout);
       let pointId = jQuery(this).attr("data-id");
       let id = jQuery(this).closest(".imh-6310-annotation-box").attr("data-id");
-      setTooltipPosition(pointId, id);
+      setTooltipPosition(jQuery(this), pointId, id);
       if (ima6310LastId && ima6310LastId != pointId) {
         jQuery(".imh-6310-hover-content").css("transform", "scale(0)");
       }
@@ -211,11 +211,10 @@ function imh6310RemoveLazyLoad(timeValue) {
   }, timeValue);
 }
 
-function setTooltipPosition(pointId, id) {
+function setTooltipPosition(event, pointId, id) {
+  var closest = event.closest(".imh-6310-annotation-box");
   let jsonData = JSON.parse(
-    jQuery(
-      ".imh-6310-annotation-box-" + id + " div[data-id='" + pointId + "']"
-    ).attr("data-json")
+    closest.find("div[data-id='" + pointId + "']").attr("data-json")
   );
 
   if (jsonData.selectedTemplate == "02") {
@@ -249,12 +248,8 @@ function setTooltipPosition(pointId, id) {
       height: iframeHeight + "px",
     });
   }
-  let icons = jQuery(
-    ".imh-6310-annotation-box-" +
-      id +
-      " div[data-id='" +
-      pointId +
-      "'] .imh-6310-point-icons"
+  let icons = closest.find(
+    "div[data-id='" + pointId + "'] .imh-6310-point-icons"
   );
   let tempIconSize = icons.width() / 2;
   let fromLeft = icons.offset().left;
