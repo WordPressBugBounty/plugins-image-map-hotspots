@@ -129,93 +129,154 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
       }
    } 
    
-   function imh_6310_check_license($key, $autoUpdate = false) {
+   function imh_6310_check_license($key, $autoUpdate = false)
+   {
       global $wpdb;
-  
-      // Use WordPress options API for retrieving/storing options
-      $db_key = sanitize_text_field(get_option('imh_6310_license_key'));
-  
-      if (!$db_key) {
-          update_option('imh_6310_license_key', sanitize_text_field($key));
-      } elseif ($db_key !== $key) {
-          update_option('imh_6310_license_key', sanitize_text_field($key));
+   
+      $db_key = imh_6310_get_option('imh_6310_license_key');
+      if(!$db_key){
+         $wpdb->query("DELETE FROM {$wpdb->prefix}options where option_name='imh_6310_license_key'");
+         $wpdb->query($wpdb->prepare("INSERT INTO {$wpdb->prefix}options SET option_name = %s, option_value = %s", 'imh_6310_license_key', "{$key}"));
+         if(!$wpdb->insert_id) {
+            $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}options SET option_value = %s where option_name = %s", "{$key}", 'imh_6310_license_key'));
+         }
+      }else if($db_key != $key){
+         $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}options SET option_value = %s where option_name = %s", "{$key}", 'imh_6310_license_key'));
       }
-  
-      // Ensure ZipArchive is available
-      if (!class_exists('ZipArchive')) {
-          echo "<p style='font-size: 16px; color: red;'><b>Activation Error: </b> ZipArchive extension is not activated in your cPanel. Please check the video on how to activate it.</p>";
-          echo '<iframe width="560" height="315" src="https://www.youtube.com/watch?v=TGx4-it1ons" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <br /><br />';
-          return;
-      }
-  
-      // Set up API parameters securely
-      $api_params = array(
-          'edd_action' => 'activate_license',
-          'license'    => sanitize_text_field($key),
-          'item_name'  => urlencode('Image map hotspot'),
-          'url'        => esc_url(home_url()),
-          'type'       => 'imh'
-      );
-  
-      $url = "https://demo.tcsesoft.com/";
-      $response = wp_remote_post($url, array("body" => $api_params));
-  
-      if (is_wp_error($response)) {
-          echo "<p class='imh-6310-error-message'>" . esc_html($response->get_error_message()) . "</p>";
-          return;
-      }
-  
-      $license_data = json_decode(wp_remote_retrieve_body($response));
-      if (!isset($license_data->success) || !$license_data->success) {
-          $message = '<p class="imh-6310-error-message">An error occurred, please try again.</p>';
-          if (isset($license_data->error)) {
-              switch ($license_data->error) {
+      
+      $imh_6310_selected_server = imh_6310_get_option('imh_6310_selected_server');
+	   $url = $imh_6310_selected_server == 2 || $imh_6310_selected_server == '2' ? "http://demo.tcsesoft2.com/" : "http://demo.tcsesoft.com/";
+      if(!class_exists('ZipArchive')){
+         $api_params = array(
+            'edd_action' => 'activate_license',
+            'license' => $key,
+            'item_name' => urlencode('Image map hotspot'),
+            'url' => home_url(),
+            'type' => 'imh'
+         );
+         
+         $response = wp_remote_post($url, array("body" => $api_params));
+         $license_data = json_decode(wp_remote_retrieve_body($response));
+   
+         if (is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response)) {
+            if (is_wp_error($response)) {
+               $message = $response->get_error_message();
+            } else {
+               $message = __('An error occurred, please try again.');
+            }
+         } else {
+            if (false === $license_data->success) {
+               switch ($license_data->error) {
                   case 'invalid_key':
-                      $message = '<p class="imh-6310-error-message">You have entered an invalid license key.</p>';
-                      break;
+                     $message = __('<p class="imh-6310-error-message">Your have enter invalid license key.</p>');
+                     break;
                   case 'site_inactive':
-                      $message = '<p class="imh-6310-error-message">Your license is not active for this URL.</p>';
-                      break;
-              }
-          }
-          echo $message;
-          return;
+                     $message = __('<p class="imh-6310-error-message">Your license is not active for this URL.</p>');
+                     break;
+                  default:
+                     $message = __('<p class="imh-6310-error-message">An error occurred, please try again.</p>');
+                     break;
+               }
+               return;
+            }
+         }
+   
+         if (!empty($message)) {
+            echo $message;
+            return;
+         }
+      
+         if (!function_exists('download_url')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once(ABSPATH . 'wp-includes/pluggable.php');
+         }
+   
+         $file_url = $license_data->download_url;
+         $tmp_file = download_url($file_url);
+         $filepath = ABSPATH . 'wp-content/plugins';
+         WP_Filesystem();
+         $unzipfile = unzip_file($tmp_file, $filepath);
+   
+         if (is_wp_error($unzipfile)) {
+            echo '<p class="imh-6310-error-message">There was an error unzipping the file.</p>';
+            return;
+         } else {
+            
+            if(!$autoUpdate){
+               echo "<p class='imh-6310-success-message'>Congratulations! Your license activated successfully.</p>";		
+               wp_remote_post($url, array("body" => ['file_name' => $license_data->file_name]));
+               return;
+            }				
+         }
+   
+         echo "<p style='font-size: 16px; color: red;'><b>Activation Error: </b> ZipArchive extension is not activated in your cPanel. Please check the video on how to activate it.</p>";
+         echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/XQMLA_F_CYs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <br /><br />';
+         return;
       }
-  
-      // Ensure necessary functions are available for download/unzipping
-      if (!function_exists('download_url')) {
-          require_once ABSPATH . 'wp-admin/includes/file.php';
-      }
-      if (!function_exists('wp_handle_sideload')) {
-          require_once ABSPATH . 'wp-admin/includes/file.php';
-      }
-  
-      // Download and unzip the file securely
-      $file_url = esc_url($license_data->download_url);
-      $tmp_file = download_url($file_url);
-  
-      if (is_wp_error($tmp_file)) {
-          echo '<p class="imh-6310-error-message">Error downloading the file.</p>';
-          return;
-      }
-  
-      $plugin_dir = WP_CONTENT_DIR . '/plugins/';
-      $file_name  = sanitize_file_name($license_data->file_name);
-      $file_path  = $plugin_dir . $file_name;
-  
-      $zip = new ZipArchive;
-      if ($zip->open($tmp_file) === true) {
-          $zip->extractTo($plugin_dir);
-          $zip->close();
-          @unlink($tmp_file);
-  
-          if (!$autoUpdate) {
-              echo "<p class='imh-6310-success-message'>Congratulations! Your license activated successfully.</p>";
-          }
+   
+      $api_params = array(
+         'edd_action' => 'activate_license',
+         'license' => $key,
+         'item_name' => urlencode('Image map hotspot'),
+         'url' => home_url(),
+         'type' => 'imh'
+      );
+      
+      $response = wp_remote_post($url, array("body" => $api_params));
+      $license_data = json_decode(wp_remote_retrieve_body($response));
+   
+      if (is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response)) {
+         if (is_wp_error($response)) {
+            $message = $response->get_error_message();
+         } else {
+            $message = __('An error occurred, please try again.');
+         }
       } else {
-          echo '<p class="imh-6310-error-message">There was an error unzipping the file.</p>';
+         if (false === $license_data->success) {
+            switch ($license_data->error) {
+               case 'invalid_key':
+                  $message = __('<p class="imh-6310-error-message">Your have enter invalid license key.</p>');
+                  break;
+               case 'site_inactive':
+                  $message = __('<p class="imh-6310-error-message">Your license is not active for this URL.</p>');
+                  break;
+               default:
+                  $message = __('<p class="imh-6310-error-message">An error occurred, please try again.</p>');
+                  break;
+            }
+         }
       }
-  }
+   
+      if (!empty($message)) {
+         echo $message;
+         return;
+      }
+   
+      if (!function_exists('download_url')) {
+         require_once ABSPATH . 'wp-admin/includes/file.php';
+         require_once(ABSPATH . 'wp-includes/pluggable.php');
+      }
+      $file_url = $license_data->download_url;
+      $tmp_file = download_url($file_url);
+      $filepath = WP_CONTENT_DIR . '/plugins';
+      WP_Filesystem();
+      copy($tmp_file, $filepath . "/{$license_data->file_name}");
+      @unlink($tmp_file);
+   
+      $zip = new ZipArchive;
+      $res = $zip->open($filepath . "/{$license_data->file_name}");
+      if (!$res) {
+         echo '<p class="imh-6310-error-message">There was an error unzipping the file.</p>';
+      } else {
+         $zip->extractTo($filepath . "/");
+         $zip->close();
+      
+         if(!$autoUpdate){
+            echo "<p class='imh-6310-success-message'>Congratulations! Your license activated successfully.</p>";		
+         }				
+      }
+      wp_remote_post($url, array("body" => ['file_name' => $license_data->file_name]));
+   }
 
    function imh_6310_fa_icon_list($startTag, $endTag) {
       $iconArray = array (

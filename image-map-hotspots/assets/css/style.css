@@ -333,7 +333,6 @@ select.imh-6310-form-input {
 }
 .imh-6310-annotation-box {
   width: 100%;
-  background: #fff;
   float: left;
   padding: 0;
   position: relative;
@@ -412,7 +411,6 @@ select.imh-6310-form-input {
   float: left;
   position: relative;
   width: 100%;
-  background: #fff;
 }
 .imh-6310-col-2 {
   width: calc(50% - 30px);
