@@ -2,7 +2,7 @@
 Contributors: WpMart
 Tags: image hotspot, image hotspots, hotspot picture, hotspot image, hotspot image wordpress, wordpress image hotspot plugin
 Requires at least: 5.4
-Tested up to: 6.6
+Tested up to: 6.7
 Stable tag: 2.7
 Requires PHP: 5.6
 License: GPLv2 or later
