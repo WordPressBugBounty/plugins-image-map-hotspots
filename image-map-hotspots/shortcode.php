@@ -22,8 +22,8 @@ if ($ids) {
 }
 $jsonData = isset($cssData['json_data']) ? json_decode(stripslashes(html_entity_decode($cssData['json_data']))) : [];
 
-wp_enqueue_style('imh-6310-font-awesome-5-0-13', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css');
-   wp_enqueue_style('imh-6310-font-awesome-4-07', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+wp_enqueue_style('imh-6310-font-awesome-5-0-13', plugins_url('assets/css/font-awesome-5.9.0.all.min.css', __FILE__));
+wp_enqueue_style('imh-6310-font-awesome-4-7-0', plugins_url('assets/css/font-awesome-4.7.0.all.min.css', __FILE__));
 wp_enqueue_style('imh-6310-owl-carousel', plugins_url('output-common-css.css', __FILE__));
 include imh_6310_plugin_url . "output-css.php";
 ?>

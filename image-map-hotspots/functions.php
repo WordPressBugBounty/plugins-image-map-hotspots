@@ -14,20 +14,19 @@ function imh_6310_link_css_js($hook)
    ) {
    return;
 }
-   wp_enqueue_style('ima-google-font', 'https://fonts.googleapis.com/css?family=Amaranth');
+   wp_enqueue_style('ima-google-font', plugins_url('assets/css/google-font.css', __FILE__));
    wp_enqueue_style('imh-6310-style', plugins_url('assets/css/style.css', __FILE__));
    wp_enqueue_style('imh-6310-color-style', plugins_url('assets/css/jquery.minicolors.css', __FILE__));
    wp_enqueue_style('imh-6310-font-select-style', plugins_url('assets/css/fontselect.css', __FILE__));
-   wp_enqueue_style('imh-6310-font-awesome-5-0-13', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css');
-   wp_enqueue_style('imh-6310-codemirror-style', 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.0/codemirror.min.css');
-   wp_enqueue_style('imh-6310-color-style', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.3.4/jquery.minicolors.min.css');
-   wp_enqueue_style('imh-6310-jquery-ui-css', "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css");
+   wp_enqueue_style('imh-6310-font-awesome-5-0-13', plugins_url('assets/css/font-awesome-5.9.0.all.min.css', __FILE__));
+   wp_enqueue_style('imh-6310-codemirror-style', plugins_url('assets/css/codemirror.min.css', __FILE__));
+   wp_enqueue_style('imh-6310-color-style', plugins_url('assets/css/jquery.minicolors.min.css', __FILE__));
+   wp_enqueue_style('imh-6310-jquery-ui-css', plugins_url('assets/css/jquery-ui.min.css', __FILE__));
 
-   
    wp_enqueue_script('imh-6310-font-select-js', plugins_url('assets/js/fontselect.js', __FILE__), array('jquery'));
-   wp_enqueue_script('imh-6310-jquery-ui-js', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array('jquery'));
-   wp_enqueue_script('imh-6310-color-js', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-minicolors/2.3.4/jquery.minicolors.min.js', array('jquery'));
-   wp_enqueue_script('imh-6310-codemirror-js', 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.0/codemirror.min.js', array('jquery'));
+   wp_enqueue_script('imh-6310-jquery-ui-js', plugins_url('assets/js/jquery-ui.min.js', __FILE__), array('jquery'));
+   wp_enqueue_script('imh-6310-color-js', plugins_url('assets/js/jquery.minicolors.min.js', __FILE__), array('jquery'));
+   wp_enqueue_script('imh-6310-codemirror-js', plugins_url('assets/js/codemirror.min.js', __FILE__), array('jquery'));
    wp_enqueue_script('imh-6310-common', plugins_url('assets/js/imh-6310-common.js', __FILE__), array('jquery'));
    wp_enqueue_script('imh-6310-json-js', plugins_url('assets/js/json-data.js', __FILE__), array('jquery'));
    wp_enqueue_script('imh-6310-admin-js', plugins_url('assets/js/imh-6310-admin-script.js', __FILE__), array('jquery'));
