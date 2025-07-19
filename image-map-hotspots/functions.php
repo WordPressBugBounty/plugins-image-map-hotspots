@@ -18,7 +18,7 @@ function imh_6310_link_css_js($hook)
    wp_enqueue_style('imh-6310-style', plugins_url('assets/css/style.css', __FILE__));
    wp_enqueue_style('imh-6310-color-style', plugins_url('assets/css/jquery.minicolors.css', __FILE__));
    wp_enqueue_style('imh-6310-font-select-style', plugins_url('assets/css/fontselect.css', __FILE__));
-   wp_enqueue_style('imh-6310-font-awesome-5-0-13', plugins_url('assets/css/font-awesome-5.9.0.all.min.css', __FILE__));
+   wp_enqueue_style('imh-font-awesome-all', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
    wp_enqueue_style('imh-6310-codemirror-style', plugins_url('assets/css/codemirror.min.css', __FILE__));
    wp_enqueue_style('imh-6310-color-style', plugins_url('assets/css/jquery.minicolors.min.css', __FILE__));
    wp_enqueue_style('imh-6310-jquery-ui-css', plugins_url('assets/css/jquery-ui.min.css', __FILE__));

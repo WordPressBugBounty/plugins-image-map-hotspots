@@ -51,6 +51,15 @@
   </table>
 </div>
 
+<div class="imh-6310-form imh_6310_woocommerce_image imh-6310-hide">
+  <h3 style="color: #c20606">This feature is only available in the Pro version, so we have included a screenshot to know the Pro feature.</h3><br />
+  <img src="<?php echo imh_6310_plugin_dir_url . 'assets/images/woocommerce.png' ?>" alt="">
+</div>
+<div class="imh-6310-form imh_6310_shortcode_image imh-6310-hide">
+  <h3 style="color: #c20606">This feature is only available in the Pro version, so we have included a screenshot to know the Pro feature.</h3><br />
+  <img src="<?php echo imh_6310_plugin_dir_url . 'assets/images/shortcode.png' ?>" alt="" style="width: 50%; height: auto;" >
+</div>
+
 <div class="imh-6310-form imh_6310_template_embedded imh-6310-form-02 imh-6310-hide">
   <table border="0" width="100%" cellpadding="10" cellspacing="0"> 
     <tr>

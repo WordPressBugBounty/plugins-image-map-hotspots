@@ -5,7 +5,7 @@
   Description: Image hotspot lets you easily add custom tooltips to your images and add hotspot when highlighting them. Furthermore, you have the option of setting customized tooltip content, position, animation, and more.
   Author: Sk Abul Hasan
   Author URI: https://www.wpmart.org/
-  Version: 2.8
+  Version: 2.9
  */
 
 if (!defined('ABSPATH'))
@@ -13,7 +13,7 @@ if (!defined('ABSPATH'))
 
 define('imh_6310_plugin_url', plugin_dir_path(__FILE__));
 define('imh_6310_plugin_dir_url', plugin_dir_url(__FILE__));
-define('imh_6310_PLUGIN_CURRENT_VERSION', 2.8);
+define('imh_6310_PLUGIN_CURRENT_VERSION', 2.9);
 
 add_shortcode('imh_6310_image_map', 'imh_6310_image_map_shortcode');
 

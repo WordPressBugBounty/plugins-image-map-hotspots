@@ -225,7 +225,7 @@ jQuery(window).load(function () {
     let val = parseInt(jQuery(this).val());
     let parentId = jQuery(this).closest(".imh-6310-modal").attr("id");
     jQuery(
-      ".imh-6310-tooltip-link, .imh-6310-embided, .imh-6310-external-link, .imh-6310-templates, .imh-6310-tooltip-img-css, .imh_6310_custom_template"
+      ".imh-6310-tooltip-link, .imh-6310-embided, .imh-6310-external-link, .imh-6310-templates, .imh-6310-tooltip-img-css, .imh_6310_custom_template, .imh_6310_woocommerce_image, .imh_6310_woocommerce_image, .imh_6310_shortcode_image"
     ).addClass("imh-6310-hide");
     jQuery(`.imh-6310-type-${val}`).removeClass("imh-6310-hide");
     if (val == 1) {
@@ -244,12 +244,23 @@ jQuery(window).load(function () {
       jQuery(
         `#${parentId} .imh-6310-tooltip_img_section .imh-6310-type-${val}:first, #imh_6310_custom_code-html, .imh_6310_custom_code_popup-html`
       ).trigger("click");
-    } else {
+    } else if(val == 3){
       jQuery(".imh_6310_custom_template").removeClass("imh-6310-hide");
       jQuery(
         '.imh_6310_font_prop, .imh_6310_template_embedded, .toggle-tabs li[data-id="3"]'
       ).addClass("imh-6310-hide");
       jQuery(".imh_6310_template_description").addClass("imh-6310-hide");
+    } else if(val == 5){
+      jQuery(
+        '.imh_6310_font_prop, .imh_6310_template_embedded, .toggle-tabs li[data-id="3"], .imh_6310_template_description'
+      ).addClass("imh-6310-hide");
+      jQuery(".imh_6310_woocommerce_image").removeClass("imh-6310-hide");
+    }
+    else if(val == 6){
+      jQuery(
+        '.imh_6310_font_prop, .imh_6310_template_embedded, .toggle-tabs li[data-id="3"], .imh_6310_template_description'
+      ).addClass("imh-6310-hide");
+      jQuery(".imh_6310_shortcode_image").removeClass("imh-6310-hide");
     }
   });
 

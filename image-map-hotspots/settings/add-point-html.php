@@ -142,6 +142,8 @@
                 <input class='imh-6310-section-select' value='1' type="radio" name="popover_new" checked />Tooltip
                 <input class='imh-6310-section-select' value='2' type="radio" name="popover_new">Embedded code <span class="imh-6310-pro">(Pro)</span>
                 <input class='imh-6310-section-select' value='3' type="radio" name="popover_new">Custom code <span class="imh-6310-pro">(Pro)</span>
+                <input class='imh-6310-section-select' value='5' type="radio" name="popover_new">WooCommerce Products<span class="imh-6310-pro">(Pro)</span> 
+                <input class='imh-6310-section-select' value='6' type="radio" name="popover_new">ShortCode<span class="imh-6310-pro">(Pro)</span>
               </td>
             </tr>          
           </table>
