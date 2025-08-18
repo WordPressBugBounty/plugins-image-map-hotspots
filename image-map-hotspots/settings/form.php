@@ -70,7 +70,7 @@
                   <button class="imh-6310-btn-success imh-6310-zoom-icon">Upload Icon</button>
                 </td>
               </tr>
-              <tr height="50" class="toggle-zoom-feature">
+              <tr height="50" class="toggle-zoom-feature" style="background: #f2f2f2 !important;">
                 <td>
                   <b>Zoom Out Icon <span class="imh-6310-pro">(Pro)</span>:</b><br />
                 </td>
@@ -80,7 +80,7 @@
                   <button class="imh-6310-btn-success imh-6310-zoom-icon">Upload Icon</button>
                 </td>
               </tr>
-              <tr height="50" class="toggle-zoom-feature">
+              <tr height="50" class="toggle-zoom-feature" style="background: #fff !important;">
                 <td>
                   <b>Desktop Icon Size <span class="imh-6310-pro">(Pro)</span>:</b><br />
                 </td>
@@ -88,7 +88,7 @@
                   <input type="number" class="imh-6310-form-input" name="desktop_icon_size" value="<?php echo isset($cssData['desktop_icon_size']) ? esc_attr($cssData['desktop_icon_size']) : '30' ?>" />
                 </td>
               </tr>
-              <tr height="50" class="toggle-zoom-feature">
+              <tr height="50" class="toggle-zoom-feature" style="background: #f2f2f2 !important;">
                 <td>
                   <b>Mobile Icon Size <span class="imh-6310-pro">(Pro)</span>:</b><br />
                 </td>
@@ -96,16 +96,36 @@
                   <input type="number" class="imh-6310-form-input" name="mobile_icon_size" value="<?php echo isset($cssData['mobile_icon_size']) ? esc_attr($cssData['mobile_icon_size']) : '25' ?>" />
                 </td>
               </tr>
-              <tr height="50" class="toggle-zoom-feature">
+              <tr height="50" class="toggle-zoom-feature" style="background: #fff !important;">
                 <td>
                   <b>Icon Position <span class="imh-6310-pro">(Pro)</span>:</b><br />
                 </td>
                 <td>
                   <select name="icon_position" class="imh-6310-form-input">
-                    <option value="flex-start">Left</option>
-                    <option value="center" <?php echo isset($cssData['icon_position']) && ($cssData['icon_position'] == 'center') ? ' selected' : '' ?>>Center</option>
-                    <option value="flex-end" <?php echo isset($cssData['icon_position']) && ($cssData['icon_position'] == 'flex-end') ? ' selected' : '' ?>>Right</option>
+                    <?php
+                      $positions = [
+                        'right-top' => 'Right Top',
+                        'right-bottom' => 'Right Bottom',
+                        'left-top' => 'Left Top',
+                        'left-bottom' => 'Left Bottom',
+                        'flex-start' => 'Left',
+                        'center' => 'Center',
+                        'flex-end' => 'Right',
+                      ];
+
+                      $selectedKey = isset($cssData['icon_position']) ? $cssData['icon_position'] : 'right-top';
+                      foreach ($positions as $key => $label) {
+                        $selected = ($key === $selectedKey) ? ' selected' : '';
+                        echo "<option value=\"{$key}\"{$selected}>{$label}</option>\n";
+                      }
+                    ?>
                   </select>
+                </td>
+              </tr>
+              <tr height="40px" class="toggle-zoom-feature toggle-zoom-feature-background" style="background: #f2f2f2 !important;">
+                <td><label class="imh-6310-form-label" for="icons">Icon Background:</label><span class="imh-6310-pro">(Pro)</span></td>
+                <td>
+                  <input type="text" name="icon_background" class="imh_6310_icon_background imh-6310-form-input imh_6310_color_picker" data-opacity="0.8" data-format="rgb" value="<?php echo isset($cssData['icon_background']) ? esc_attr($cssData['icon_background']) : 'rgba(0, 0, 0, 0.9)' ?>">
                 </td>
               </tr>
             </table>

@@ -244,19 +244,18 @@ jQuery(window).load(function () {
       jQuery(
         `#${parentId} .imh-6310-tooltip_img_section .imh-6310-type-${val}:first, #imh_6310_custom_code-html, .imh_6310_custom_code_popup-html`
       ).trigger("click");
-    } else if(val == 3){
+    } else if (val == 3) {
       jQuery(".imh_6310_custom_template").removeClass("imh-6310-hide");
       jQuery(
         '.imh_6310_font_prop, .imh_6310_template_embedded, .toggle-tabs li[data-id="3"]'
       ).addClass("imh-6310-hide");
       jQuery(".imh_6310_template_description").addClass("imh-6310-hide");
-    } else if(val == 5){
+    } else if (val == 5) {
       jQuery(
         '.imh_6310_font_prop, .imh_6310_template_embedded, .toggle-tabs li[data-id="3"], .imh_6310_template_description'
       ).addClass("imh-6310-hide");
       jQuery(".imh_6310_woocommerce_image").removeClass("imh-6310-hide");
-    }
-    else if(val == 6){
+    } else if (val == 6) {
       jQuery(
         '.imh_6310_font_prop, .imh_6310_template_embedded, .toggle-tabs li[data-id="3"], .imh_6310_template_description'
       ).addClass("imh-6310-hide");
@@ -612,8 +611,8 @@ function imh_6310_icon_image_select() {
       "overflow-y": "auto",
     });
   });
-  /* ######### Custom Icon For Zoom In/Out End ########### */
 
+  /* ######### Custom Icon For Zoom In/Out End ########### */
   const zoomFeature = Number(
     jQuery("input[name='zoom_feature']:checked").val()
   );
@@ -621,10 +620,50 @@ function imh_6310_icon_image_select() {
     ? jQuery(".toggle-zoom-feature").show()
     : jQuery(".toggle-zoom-feature").hide();
 
+  let zoomValue = jQuery("select[name='icon_position']").val();
+  if (
+    (zoomValue === "right-top" ||
+      zoomValue === "right-bottom" ||
+      zoomValue === "left-top" ||
+      zoomValue === "left-bottom") &&
+    zoomFeature > 1
+  ) {
+    jQuery(".toggle-zoom-feature-background").show();
+  } else {
+    jQuery(".toggle-zoom-feature-background").hide();
+  }
+
   jQuery("body").on("change", "input[name='zoom_feature']", function () {
     const value = Number(jQuery(this).val());
     value > 1
       ? jQuery(".toggle-zoom-feature").show()
       : jQuery(".toggle-zoom-feature").hide();
+
+    const zoomValue = jQuery("select[name='icon_position']").val();
+    if (
+      (zoomValue === "right-top" ||
+        zoomValue === "right-bottom" ||
+        zoomValue === "left-top" ||
+        zoomValue === "left-bottom") &&
+      value > 1
+    ) {
+      jQuery(".toggle-zoom-feature-background").show();
+    } else {
+      jQuery(".toggle-zoom-feature-background").hide();
+    }
+  });
+
+  jQuery("body").on("change", "select[name='icon_position']", function () {
+    const value = jQuery(this).val();
+    if (
+      value === "right-top" ||
+      value === "right-bottom" ||
+      value === "left-top" ||
+      value === "left-bottom"
+    ) {
+      jQuery(".toggle-zoom-feature-background").show();
+    } else {
+      jQuery(".toggle-zoom-feature-background").hide();
+    }
   });
 }

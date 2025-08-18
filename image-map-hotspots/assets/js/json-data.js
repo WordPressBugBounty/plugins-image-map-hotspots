@@ -1,3 +1,4 @@
+imh_6310_reset_fields();
 function generateJSON(selector = "#imh-6310-add-point ") {
   let myObj = {};
   let myCSS = {};
@@ -36,7 +37,9 @@ function generateJSON(selector = "#imh-6310-add-point ") {
     selector + `textarea[name='imh_6310_custom_code']`
   ).val();
   myObj.blinkTooltip = jQuery(selector + ".imh-6310_blink_type:checked").val();
-  myObj.glowColor = jQuery(selector + ".imh_6310_fontawesome_icon_glow_color").val();
+  myObj.glowColor = jQuery(
+    selector + ".imh_6310_fontawesome_icon_glow_color"
+  ).val();
 
   // check element type
 
@@ -47,10 +50,12 @@ function generateJSON(selector = "#imh-6310-add-point ") {
   myObj.popupEmbedded = jQuery(selector + ".popup_embedded").val();
   myObj.selectedTemplate = "01";
 
-   myObj.popupCustomHtml = jQuery(selector + `textarea[name='imh_6310_popup_custom_html']`).val()
-  ;
-  myObj.popupCustomCss = jQuery(selector + `textarea[name='imh_6310_popup_custom_css']`).val()
-  ;
+  myObj.popupCustomHtml = jQuery(
+    selector + `textarea[name='imh_6310_popup_custom_html']`
+  ).val();
+  myObj.popupCustomCss = jQuery(
+    selector + `textarea[name='imh_6310_popup_custom_css']`
+  ).val();
   myObj.popupCustomCodeWidth = jQuery(
     selector + ".imh_6310_custom_popup_width"
   ).val();
@@ -115,8 +120,7 @@ function generateJSON(selector = "#imh-6310-add-point ") {
   ).val();
   myObj.elementType = elementType;
 
-
-    myCSS.styleCSS = `
+  myCSS.styleCSS = `
     .imh-6310-drag[data-id='${window.currentPoint}'] .imh-6310-pin-main-img{ 
         color: ${myObj.fontAwesomeIconColor} !important;
         font-size:${myObj.fontAwesomIconSize}px !important;
@@ -127,8 +131,6 @@ function generateJSON(selector = "#imh-6310-add-point ") {
     } 
    
   `;
-  
-  
 
   //imh_6310_reset_fields();
   return [myObj, myCSS];
@@ -212,12 +214,12 @@ function setJsonData() {
   jQuery(".imh_6310_custom_text_font_color").val(jsonData.customTextColor);
   jQuery(".imh_6310_fontawesome_icon_glow_color").val(jsonData.glowColor);
   jQuery(".imh_6310_fontawesome_icon_glow_color")
-  .closest("div")
-  .find(".minicolors-swatch-color")
-  .css({
-    "background-color": jsonData.glowColor,
-  });
-  
+    .closest("div")
+    .find(".minicolors-swatch-color")
+    .css({
+      "background-color": jsonData.glowColor,
+    });
+
   jQuery(".imh_6310_custom_text_font_color")
     .closest("div")
     .find(".minicolors-swatch-color")
@@ -251,11 +253,11 @@ function setJsonData() {
     jsonData.openDesFontColor
   );
   jQuery(".imh-6310-tooltip_discription_font_color")
-  .closest("div")
-  .find(".minicolors-swatch-color")
-  .css({
-    "background-color": jsonData.openDesFontColor,
-  });
+    .closest("div")
+    .find(".minicolors-swatch-color")
+    .css({
+      "background-color": jsonData.openDesFontColor,
+    });
   jQuery(".tooltip_discription_font_color")
     .closest("div")
     .find(".minicolors-swatch-color")
@@ -319,9 +321,8 @@ function setJsonData() {
       });
 
     //Uncommon fields
-   
   }
- if(jsonData.elementType == 1) {
+  if (jsonData.elementType == 1) {
     jQuery("#imh-6310-edit-point .imh-6310-tooltip-link").removeClass(
       "imh-6310-hide"
     );
@@ -341,7 +342,7 @@ function imh_6310_reset_fields() {
   jQuery(".imh-6310-embedded_code_link").val("");
   let fieldList =
     ".icons-1, .icons-2, .imh-6310-image-edit-1, .imh-6310-image-edit-2, .imh-6310_custom_enter_text, .imh_6310_custom_text_font_size, .imh_6310_custom_text_font_color, .imh_6310_custom_text_font_bg_color, .imh_6310_fontawesome_icon_color, .imh_6310_fontawesome_icon_hover_color, .imh-6310_icon_size, .imh-6310_icon_size_in_mobile, .img_or_icon_size, .img_or_icon_size_in_mobile, .imh_6310_link_text, .imh_6310_custom_link_url, .popup_embedded, .imh_6310_template_font_color, .imh_6310_template_bg_color, .imh_6310_template_font_size, .imh-6310-embedded_code_link, .imh-6310-tooltip_discription, .imh-6310-tooltip_discription_font_size, .imh_6310_fontawesome_icon_glow_color, .imh-6310-tooltip_discription_font_color, .imh-6310-button-text, .imh-6310-button-url, .imh_6310_button_text_color, .imh_6310_button_bg_color, .imh_6310_button_text_size, .imh-6310-custome_html, .imh-6310-custome_css, .imh_6310_custom_popup_width, .imh_6310_popup_custom_html, .imh_6310_popup_custom_css";
-    fieldList = fieldList.split(",");
+  fieldList = fieldList.split(",");
   // setTimeout(function () {
   for (let i = 0; i < fieldList.length; i++) {
     let selector = jQuery(fieldList[i].trim());
@@ -370,7 +371,7 @@ function imh_6310_reset_fields() {
 
   jQuery(".imh_6310_textarea").addClass("imh-6310-hide");
 
-  setTimeout(function() {
+  setTimeout(function () {
     if (jQuery(".imh_6310_color_picker").length) {
       jQuery(".imh_6310_color_picker").each(function () {
         jQuery(this).minicolors({
@@ -424,7 +425,7 @@ function defineDragableElement() {
         jQuery(this).attr(
           "data-position",
           `${xPos}-${yPos}-${tWidth}-${iconWidth}`
-        );      
+        );
       },
     });
   });
