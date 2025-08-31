@@ -14,10 +14,16 @@ function generateJSON(selector = "#imh-6310-add-point ") {
     selector + ".imh_6310_fontawesome_icon_hover_color"
   ).val();
   myObj.fontAwesomIconSize = jQuery(selector + ".imh-6310_icon_size").val();
+  myObj.fontAwesomIconSizeInIpad = jQuery(
+    selector + ".imh-6310_icon_size_in_ipad"
+  ).val();
   myObj.fontAwesomIconSizeInMobile = jQuery(
     selector + ".imh-6310_icon_size_in_mobile"
   ).val();
   myObj.imgOrIconSize = jQuery(selector + ".img_or_icon_size").val();
+  myObj.imgOrIconSizeInIpad = jQuery(
+    selector + ".img_or_icon_size_in_ipad"
+  ).val();
   myObj.imgOrIconSizeInMobile = jQuery(
     selector + ".img_or_icon_size_in_mobile"
   ).val();
@@ -195,12 +201,22 @@ function setJsonData() {
       "background-color": jsonData.fontAwesomeIconHoverColor,
     });
   jQuery(".imh-6310_icon_size").val(jsonData.fontAwesomIconSize);
+  jQuery(".imh-6310_icon_size_in_ipad").val(
+    jsonData.fontAwesomIconSizeInIpad !== undefined
+      ? jsonData.fontAwesomIconSizeInIpad
+      : jsonData.fontAwesomIconSize
+  );
   jQuery(".imh-6310_icon_size_in_mobile").val(
     jsonData.fontAwesomIconSizeInMobile !== undefined
       ? jsonData.fontAwesomIconSizeInMobile
       : jsonData.fontAwesomIconSize
   );
   jQuery(".img_or_icon_size").val(jsonData.imgOrIconSize);
+  jQuery(".img_or_icon_size_in_ipad").val(
+    jsonData.imgOrIconSizeInIpad !== undefined
+      ? jsonData.imgOrIconSizeInIpad
+      : jsonData.imgOrIconSize
+  );
   jQuery(".img_or_icon_size_in_mobile").val(
     jsonData.imgOrIconSizeInMobile !== undefined
       ? jsonData.imgOrIconSizeInMobile
@@ -341,7 +357,7 @@ function imh_6310_reset_fields() {
   ).addClass("imh-6310-hide");
   jQuery(".imh-6310-embedded_code_link").val("");
   let fieldList =
-    ".icons-1, .icons-2, .imh-6310-image-edit-1, .imh-6310-image-edit-2, .imh-6310_custom_enter_text, .imh_6310_custom_text_font_size, .imh_6310_custom_text_font_color, .imh_6310_custom_text_font_bg_color, .imh_6310_fontawesome_icon_color, .imh_6310_fontawesome_icon_hover_color, .imh-6310_icon_size, .imh-6310_icon_size_in_mobile, .img_or_icon_size, .img_or_icon_size_in_mobile, .imh_6310_link_text, .imh_6310_custom_link_url, .popup_embedded, .imh_6310_template_font_color, .imh_6310_template_bg_color, .imh_6310_template_font_size, .imh-6310-embedded_code_link, .imh-6310-tooltip_discription, .imh-6310-tooltip_discription_font_size, .imh_6310_fontawesome_icon_glow_color, .imh-6310-tooltip_discription_font_color, .imh-6310-button-text, .imh-6310-button-url, .imh_6310_button_text_color, .imh_6310_button_bg_color, .imh_6310_button_text_size, .imh-6310-custome_html, .imh-6310-custome_css, .imh_6310_custom_popup_width, .imh_6310_popup_custom_html, .imh_6310_popup_custom_css";
+    ".icons-1, .icons-2, .imh-6310-image-edit-1, .imh-6310-image-edit-2, .imh-6310_custom_enter_text, .imh_6310_custom_text_font_size, .imh_6310_custom_text_font_color, .imh_6310_custom_text_font_bg_color, .imh_6310_fontawesome_icon_color, .imh_6310_fontawesome_icon_hover_color, .imh-6310_icon_size, .imh-6310_icon_size_in_mobile, .img_or_icon_size, .img_or_icon_size_in_mobile, .imh_6310_link_text, .imh_6310_custom_link_url, .popup_embedded, .imh_6310_template_font_color, .imh_6310_template_bg_color, .imh_6310_template_font_size, .imh-6310-embedded_code_link, .imh-6310-tooltip_discription, .imh-6310-tooltip_discription_font_size, .imh_6310_fontawesome_icon_glow_color, .imh-6310-tooltip_discription_font_color, .imh-6310-button-text, .imh-6310-button-url, .imh_6310_button_text_color, .imh_6310_button_bg_color, .imh_6310_button_text_size, .imh-6310-custome_html, .imh-6310-custome_css, .imh_6310_custom_popup_width, .imh_6310_popup_custom_html, .imh_6310_popup_custom_css, .imh-6310_icon_size_in_ipad, .img_or_icon_size_in_ipad";
   fieldList = fieldList.split(",");
   // setTimeout(function () {
   for (let i = 0; i < fieldList.length; i++) {
