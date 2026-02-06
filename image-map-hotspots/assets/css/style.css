@@ -284,9 +284,9 @@ select.imh-6310-form-input {
 .imh-6310-form-input.sm {
   min-width: 180px;
 }
-.imh-6310-form-input-lg {
-  min-width: 300px !important;
-}
+/* .imh-6310-form-input.lg {
+  min-width: 300px;
+} */
 .imh-6310-pull-right {
   float: right;
 }

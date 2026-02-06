@@ -60,12 +60,6 @@
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
-                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Icon size in iPad <span class="imh-6310-pro">(Pro)</span> :</label></td>
-                <td>
-                  <input type="number" min='0' max="" name="imh-6310_icon_size_in_ipad" class="imh-6310-form-input imh-6310_icon_size_in_ipad" data-value="20">
-                </td>
-              </tr>
-              <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
                 <td class='imh-6310-width-150'><b>Icon size in Mobile  <span class="imh-6310-pro">(Pro)</span> :</label></td>
                 <td>
                   <input type="number" min='0' max="" name="imh-6310_icon_size_in_mobile" class="imh-6310-form-input imh-6310_icon_size_in_mobile" data-value="20">
@@ -75,26 +69,20 @@
                 <td class='imh-6310-width-150'><b>Custom Icon/Image <span class="imh-6310-pro">(Pro)</span> :</b></td>
                 <td>
                   <input type="text" name="image" id="imh-6310-image-edit-1" class="imh-6310-form-input imh-6310-image-edit-1" value="">
-                  <input type="button" value="Upload Image" class="imh-6310-btn-default imh-6310-icon-upload custom-icon-image" data-id="imh-6310-image-edit-1">
+                  <input type="button" value="Upload Image" class="imh-6310-btn-default imh-6310-icon-upload custom-icon-image" data-id="imh-6310-image-edit-1" data-value=''>
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">
                 <td class='imh-6310-width-150'><b>Custom Hover Icon/Image <span class="imh-6310-pro">(Pro)</span> :</b></td>
                 <td>
                   <input type="text" name="hoverimage" id="imh-6310-image-edit-2" class="imh-6310-form-input imh-6310-image-edit-2" value="">
-                  <input type="button" value="Upload Hover Image" class="imh-6310-btn-default imh-6310-icon-upload custom-icon-image" data-id="imh-6310-image-edit-2">
+                  <input type="button" value="Upload Hover Image" class="imh-6310-btn-default imh-6310-icon-upload custom-icon-image" data-id="imh-6310-image-edit-2" data-value=''>
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">
                 <td class='imh-6310-width-150'><b>Image / icon Size in Desktop<span class="imh-6310-pro">(Pro)</span> :</b></td>
                 <td>
                   <input type="number" min='0' max="" name="img_or_icon_size" class="imh-6310-form-input img_or_icon_size" data-value="30">
-                </td>
-              </tr>
-              <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">
-                <td class='imh-6310-width-150'><label class="imh-6310-form-label">Image / icon Size in iPad <span class="imh-6310-pro">(Pro)</span> :</label></td>
-                <td>
-                  <input type="number" min='0' max="" name="img_or_icon_size_in_ipad" class="imh-6310-form-input img_or_icon_size_in_ipad" data-value="25">
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">

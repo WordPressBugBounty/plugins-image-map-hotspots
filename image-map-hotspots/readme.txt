@@ -2,8 +2,8 @@
 Contributors: WpMart
 Tags: image hotspot, image hotspots, hotspot picture, hotspot image, hotspot image wordpress, wordpress image hotspot plugin
 Requires at least: 5.4
-Tested up to: 6.8
-Stable tag: 3.1
+Tested up to: 6.9
+Stable tag: 3.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,8 +135,17 @@ Yes, You can override the existing styles class by your custom CSS properties.
 
 
 == Changelog ==
+= 3.4 =
+* Fixed WooCommerce Product Issue
+
+= 3.3 =
+* Fixed font awesome
+
+= 3.2 =
+* Fixed slider issue
+
 = 3.1 =
-More option added for iPad
+* More option added for iPad
 
 = 3.0 =
 * More option added in Zoom In/Out

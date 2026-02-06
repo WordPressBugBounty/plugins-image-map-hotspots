@@ -18,7 +18,8 @@ function imh_6310_link_css_js($hook)
    wp_enqueue_style('imh-6310-style', plugins_url('assets/css/style.css', __FILE__));
    wp_enqueue_style('imh-6310-color-style', plugins_url('assets/css/jquery.minicolors.css', __FILE__));
    wp_enqueue_style('imh-6310-font-select-style', plugins_url('assets/css/fontselect.css', __FILE__));
-   wp_enqueue_style('imh-font-awesome-all', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
+   wp_enqueue_style('imh-font-awesome-new', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
+   wp_enqueue_style('imh-font-awesome-old', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/v4-shims.min.css');
    wp_enqueue_style('imh-6310-codemirror-style', plugins_url('assets/css/codemirror.min.css', __FILE__));
    wp_enqueue_style('imh-6310-color-style', plugins_url('assets/css/jquery.minicolors.min.css', __FILE__));
    wp_enqueue_style('imh-6310-jquery-ui-css', plugins_url('assets/css/jquery-ui.min.css', __FILE__));
@@ -1930,7 +1931,7 @@ function imh_6310_add_new_media($id, $results = [])
          echo "
          <div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}'>
             {$anchorStart}
-               <div class='imh-6310-template-01-hover-content'>".esc_attr($js->linkText)."</div>
+               <div class='imh-6310-template-01-hover-content'>".esc_attr(str_replace("@@##!!@@", "'", $js->linkText))."</div>
             {$anchorEnd}
          </div>
          ";    
