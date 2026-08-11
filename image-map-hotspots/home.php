@@ -15,6 +15,7 @@ if (! empty($_POST['delete']) && isset($_POST['id']) && is_numeric($_POST['id'])
         $wpdb->query($wpdb->prepare("DELETE FROM {$style_table} WHERE id = %d", $id));
     }
 }
+
 if (!empty($_POST['duplicate']) && isset($_POST['id']) && is_numeric($_POST['id'])) {
     $nonce = $_REQUEST['_wpnonce'];
     if (!wp_verify_nonce($nonce, 'imh_6310_nonce_field_duplicate')) {
@@ -23,24 +24,22 @@ if (!empty($_POST['duplicate']) && isset($_POST['id']) && is_numeric($_POST['id'
       $id = (int) $_POST['id'];
       $selectedData = $wpdb->get_row($wpdb->prepare("SELECT * FROM $style_table WHERE id = %d ", $id), ARRAY_A);
       $dupList = array(
-              $selectedData['name'], 
-              $selectedData['style_name'], 
-              $selectedData['css'],           
-              $selectedData['itemids']);
-      $wpdb->query($wpdb->prepare("INSERT INTO {$style_table} (name, style_name, css,itemids) VALUES ( %s, %s, %s, %s )", $dupList));
+              $selectedData['name'] . '-copy', 
+              $selectedData['css']);
+      $wpdb->query($wpdb->prepare("INSERT INTO {$style_table} (name, css) VALUES ( %s, %s )", $dupList));
     }
   }
 
 ?>
 
-<h3 style="display: flex; width: 100%;">Image Map Annotation/Hotspot</h3>
-<button class="imh-6310-btn-success imh-6310-add-new-button"><a href="<?php echo admin_url("admin.php?page=imh-6310-image-map-hotspot&action=preview") ?>">Add New</a></button>
+<h3>Image Map Annotation/Hotspot</h3>
+<a class="add_new_btn" href="<?php echo admin_url("admin.php?page=imh-6310-image-map-hotspot&action=preview") ?>">Add New</a>
 
 <table class="imh-6310-table">
    <tr  style="background-color: #f5f5f5">
       <td style="width: 130px">Service Name</td>
       <td>Shortcode</td>
-      <td style="width: 130px">Manage</td>
+      <td style="width: 150px">Manage</td>
    </tr>
    <?php
    $data = $wpdb->get_results('SELECT * FROM '.$style_table.' ORDER BY id DESC', ARRAY_A);
@@ -48,13 +47,17 @@ if (!empty($_POST['duplicate']) && isset($_POST['id']) && is_numeric($_POST['id'
        echo '<tr class="imh-6310-row-select">';
        echo '<td>'.imh_6310_replace(esc_attr($value['name'])).'</td>';
        echo '<td><span>Shortcode <input type="text" class="imh-6310-6330-shortcode" onclick="this.setSelectionRange(0, this.value.length)" value="[imh_6310_image_map id=&quot;'.esc_attr($value['id']).'&quot;]"></span>';
-       echo '<td> 
-              <a href="'.admin_url("admin.php?page=imh-6310-image-map-hotspot&action=preview&styleid=".esc_attr($value['id'])).'" title="Edit" class=" imh-6310-margin-right-10 imh-6310-first"><button class="imh-6310-btn-success"><i class="fas fa-edit" aria-hidden="true"></i></button></a>
-
+       echo '<td>
+              <a href="'.admin_url("admin.php?page=imh-6310-image-map-hotspot&action=preview&styleid=".esc_attr($value['id'])).'" title="Edit" class="imh-6310-margin-right-10 imh-6310-first" style="margin-right: 0; margin-left; 0;"><button class="imh-6310-btn-success"><i class="fas fa-edit" aria-hidden="true"></i></button></a>
+            <form method="post">
+              '.wp_nonce_field('imh_6310_nonce_field_duplicate').'
+                    <input type="hidden" name="id" value="'.esc_attr($value['id']).'">
+                    <button class="imh-6310-margin-right-10 imh-6310-btn-primary imh-6310-first"  title="Clone/Duplicate"  type="submit" value="duplicate" name="duplicate" onclick="return confirm(\'Do you want to clone/duplicate?\');"><i class="far fa-copy" aria-hidden="true"></i></button>
+           </form>  
             <form method="post">
                '.wp_nonce_field('tss_nonce_field_delete').'
                      <input type="hidden" name="id" value="'.esc_attr($value['id']).'">
-                     <button class="imh-6310-btn-danger imh-6310-third"  title="Delete"  type="submit" value="delete" name="delete" onclick="return confirm(\'Do you want to delete?\');"><i class="far fa-times-circle" aria-hidden="true"></i></button>
+                     <button class="imh-6310-margin-right-10 imh-6310-btn-danger imh-6310-third"  title="Delete"  type="submit" value="delete" name="delete" onclick="return confirm(\'Do you want to delete?\');"><i class="far fa-times-circle" aria-hidden="true"></i></button>
             </form>
             
          </td>';

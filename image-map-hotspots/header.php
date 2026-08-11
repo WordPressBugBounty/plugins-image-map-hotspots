@@ -27,5 +27,7 @@
   <p>By the way, please check the <a href="http://www.wpmart.org/downloads/image-hotspot/" target="_blank">Premium Version</a></p>
   <p>Thank you Again!</p>
   <p></p>
+
+  <a class="imh-6310-btn-success" href="https://www.youtube.com/watch?v=Mjzxvm39gME" target="_blank">How to Create Tooltips – Video Tutorial</a> 
 </div>
 <?php imh_6310_image_map_install(); ?>

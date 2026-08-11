@@ -6,11 +6,12 @@ if (!empty($_POST['update_style_change']) && $_POST['update_style_change'] == 'S
   } else {
     $id = sanitize_text_field($_POST['id']);
     $name = sanitize_text_field($_POST['name']);
+    $display_type = sanitize_text_field($_POST['display_type']);
     $css = imh_6310_extract_data($_POST);
     if ($id) {
-      $wpdb->query($wpdb->prepare("UPDATE $style_table SET name = %s, css = %s WHERE id = %d", $name, $css, $id));
+      $wpdb->query($wpdb->prepare("UPDATE $style_table SET name = %s, display_type = %d, css = %s WHERE id = %d", $name, $display_type, $css, $id));
     } else {
-      $wpdb->query($wpdb->prepare("INSERT into $style_table SET name = %s, css = %s", $name, $css));
+      $wpdb->query($wpdb->prepare("INSERT into $style_table SET name = %s, display_type = %d,css = %s", $name, $display_type, $css));
       $redirect_id = $wpdb->insert_id;
       $url = admin_url("admin.php?page=imh-6310-image-map-hotspot&action=preview&styleid=$redirect_id");
       wp_register_script('imh-6310-redirect-script', '');

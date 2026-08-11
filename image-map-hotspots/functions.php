@@ -15,23 +15,24 @@ function imh_6310_link_css_js($hook)
    return;
 }
    wp_enqueue_style('ima-google-font', plugins_url('assets/css/google-font.css', __FILE__));
-   wp_enqueue_style('imh-6310-style', plugins_url('assets/css/style.css', __FILE__));
+   wp_enqueue_style('imh-6310-style', plugins_url('assets/css/style-pro.css', __FILE__));
    wp_enqueue_style('imh-6310-color-style', plugins_url('assets/css/jquery.minicolors.css', __FILE__));
    wp_enqueue_style('imh-6310-font-select-style', plugins_url('assets/css/fontselect.css', __FILE__));
-   wp_enqueue_style('imh-font-awesome-new', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
-   wp_enqueue_style('imh-font-awesome-old', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/v4-shims.min.css');
+   wp_enqueue_style('imh-font-awesome-all', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
    wp_enqueue_style('imh-6310-codemirror-style', plugins_url('assets/css/codemirror.min.css', __FILE__));
    wp_enqueue_style('imh-6310-color-style', plugins_url('assets/css/jquery.minicolors.min.css', __FILE__));
    wp_enqueue_style('imh-6310-jquery-ui-css', plugins_url('assets/css/jquery-ui.min.css', __FILE__));
+   wp_enqueue_style('imh-6310-select2', plugins_url('assets/css/select2.min.css', __FILE__));
 
    wp_enqueue_script('imh-6310-font-select-js', plugins_url('assets/js/fontselect.js', __FILE__), array('jquery'));
    wp_enqueue_script('imh-6310-jquery-ui-js', plugins_url('assets/js/jquery-ui.min.js', __FILE__), array('jquery'));
    wp_enqueue_script('imh-6310-color-js', plugins_url('assets/js/jquery.minicolors.min.js', __FILE__), array('jquery'));
    wp_enqueue_script('imh-6310-codemirror-js', plugins_url('assets/js/codemirror.min.js', __FILE__), array('jquery'));
-   wp_enqueue_script('imh-6310-common', plugins_url('assets/js/imh-6310-common.js', __FILE__), array('jquery'));
-   wp_enqueue_script('imh-6310-json-js', plugins_url('assets/js/json-data.js', __FILE__), array('jquery'));
-   wp_enqueue_script('imh-6310-admin-js', plugins_url('assets/js/imh-6310-admin-script.js', __FILE__), array('jquery'));
-   wp_enqueue_script('imh-6310-modal-js', plugins_url('assets/js/imh-6310-admin-modal.js', __FILE__), array('jquery'));
+   wp_enqueue_script('imh-6310-select2', plugins_url('assets/js/select2.min.js', __FILE__), array('jquery'));
+   wp_enqueue_script('imh-6310-common', plugins_url('assets/js/imh-6310-common-pro.js', __FILE__), array('jquery'));
+   wp_enqueue_script('imh-6310-json-js', plugins_url('assets/js/json-data-pro.js', __FILE__), array('jquery'));
+   wp_enqueue_script('imh-6310-admin-js', plugins_url('assets/js/imh-6310-admin-script-pro.js', __FILE__), array('jquery'));
+   wp_enqueue_script('imh-6310-modal-js', plugins_url('assets/js/imh-6310-admin-modal-pro.js', __FILE__), array('jquery'));
 }
 
 function imh_6310_replace($data) {
@@ -40,6 +41,9 @@ function imh_6310_replace($data) {
 	while(strpos($data, "\\") !== false) {
 			$data = str_replace("\\", "", $data);
 	}
+   while(strpos($data, "@@##!!@@") !== false) {
+      $data = str_replace("@@##!!@@", "'", $data);
+   }
 	return $data;
 }
 
@@ -86,6 +90,18 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
 	<?php
 }
 
+function imh_6310_check_field_exists(){
+	global $wpdb;
+	$style_table = $wpdb->prefix . 'imh_6310_style';
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$wpdb->query("SHOW COLUMNS FROM {$style_table} LIKE 'display_type'");
+	if(!($wpdb->num_rows)){
+		$wpdb->query("alter table {$style_table} add (display_type int DEFAULT 0)");
+	}
+
+}
+
    function imh_6310_image_map_install()
    {
       global $wpdb;
@@ -94,10 +110,10 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
       $charset_collate = $wpdb->get_charset_collate();
 
       $sql = "CREATE TABLE IF NOT EXISTS $style_table (
-        id int UNSIGNED NOT NULL AUTO_INCREMENT,
-        name varchar(100) DEFAULT NULL,
-        css LONGTEXT DEFAULT NULL,
-        PRIMARY KEY  (id)
+      id int UNSIGNED NOT NULL AUTO_INCREMENT,
+      name varchar(100) DEFAULT NULL,
+      css LONGTEXT DEFAULT NULL,
+      PRIMARY KEY  (id)
       ) $charset_collate;";
 
 
@@ -113,6 +129,13 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
 
    function imh_6310_version_status() {
       global $wpdb;
+      $imh_6310_textarea_updated = imh_6310_get_option('imh_6310_textarea_updated');
+      if(!$imh_6310_textarea_updated){
+         $wpdb->query("DELETE FROM {$wpdb->prefix}options where option_name='imh_6310_textarea_updated'");
+         $wpdb->query("INSERT INTO {$wpdb->prefix}options(option_name, option_value) VALUES ('imh_6310_textarea_updated', '1')");
+         $wpdb->query("ALTER TABLE {$wpdb->prefix}imh_6310_style MODIFY css LONGTEXT");
+      }
+      
       $db_version = imh_6310_get_option('imh_6310_version_info');
       if(!$db_version){
          $wpdb->query("DELETE FROM {$wpdb->prefix}options where option_name='imh_6310_version_info'");
@@ -129,154 +152,94 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
       }
    } 
    
-   function imh_6310_check_license($key, $autoUpdate = false)
-   {
+   function imh_6310_check_license($key, $autoUpdate = false) {
       global $wpdb;
-   
-      $db_key = imh_6310_get_option('imh_6310_license_key');
-      if(!$db_key){
-         $wpdb->query("DELETE FROM {$wpdb->prefix}options where option_name='imh_6310_license_key'");
-         $wpdb->query($wpdb->prepare("INSERT INTO {$wpdb->prefix}options SET option_name = %s, option_value = %s", 'imh_6310_license_key', "{$key}"));
-         if(!$wpdb->insert_id) {
-            $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}options SET option_value = %s where option_name = %s", "{$key}", 'imh_6310_license_key'));
-         }
-      }else if($db_key != $key){
-         $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}options SET option_value = %s where option_name = %s", "{$key}", 'imh_6310_license_key'));
+  
+      // Use WordPress options API for retrieving/storing options
+      $db_key = sanitize_text_field(get_option('imh_6310_license_key'));
+  
+      if (!$db_key) {
+          update_option('imh_6310_license_key', sanitize_text_field($key));
+      } elseif ($db_key !== $key) {
+          update_option('imh_6310_license_key', sanitize_text_field($key));
       }
-      
-      $imh_6310_selected_server = imh_6310_get_option('imh_6310_selected_server');
-	   $url = $imh_6310_selected_server == 2 || $imh_6310_selected_server == '2' ? "http://demo.tcsesoft2.com/" : "http://demo.tcsesoft.com/";
-      if(!class_exists('ZipArchive')){
-         $api_params = array(
-            'edd_action' => 'activate_license',
-            'license' => $key,
-            'item_name' => urlencode('Image map hotspot'),
-            'url' => home_url(),
-            'type' => 'imh'
-         );
-         
-         $response = wp_remote_post($url, array("body" => $api_params));
-         $license_data = json_decode(wp_remote_retrieve_body($response));
-   
-         if (is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response)) {
-            if (is_wp_error($response)) {
-               $message = $response->get_error_message();
-            } else {
-               $message = __('An error occurred, please try again.');
-            }
-         } else {
-            if (false === $license_data->success) {
-               switch ($license_data->error) {
-                  case 'invalid_key':
-                     $message = __('<p class="imh-6310-error-message">Your have enter invalid license key.</p>');
-                     break;
-                  case 'site_inactive':
-                     $message = __('<p class="imh-6310-error-message">Your license is not active for this URL.</p>');
-                     break;
-                  default:
-                     $message = __('<p class="imh-6310-error-message">An error occurred, please try again.</p>');
-                     break;
-               }
-               return;
-            }
-         }
-   
-         if (!empty($message)) {
-            echo $message;
-            return;
-         }
-      
-         if (!function_exists('download_url')) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-            require_once(ABSPATH . 'wp-includes/pluggable.php');
-         }
-   
-         $file_url = $license_data->download_url;
-         $tmp_file = download_url($file_url);
-         $filepath = ABSPATH . 'wp-content/plugins';
-         WP_Filesystem();
-         $unzipfile = unzip_file($tmp_file, $filepath);
-   
-         if (is_wp_error($unzipfile)) {
-            echo '<p class="imh-6310-error-message">There was an error unzipping the file.</p>';
-            return;
-         } else {
-            
-            if(!$autoUpdate){
-               echo "<p class='imh-6310-success-message'>Congratulations! Your license activated successfully.</p>";		
-               wp_remote_post($url, array("body" => ['file_name' => $license_data->file_name]));
-               return;
-            }				
-         }
-   
-         echo "<p style='font-size: 16px; color: red;'><b>Activation Error: </b> ZipArchive extension is not activated in your cPanel. Please check the video on how to activate it.</p>";
-         echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/XQMLA_F_CYs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <br /><br />';
-         return;
+  
+      // Ensure ZipArchive is available
+      if (!class_exists('ZipArchive')) {
+          echo "<p style='font-size: 16px; color: red;'><b>Activation Error: </b> ZipArchive extension is not activated in your cPanel. Please check the video on how to activate it.</p>";
+          echo '<iframe width="560" height="315" src="https://www.youtube.com/watch?v=TGx4-it1ons" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <br /><br />';
+          return;
       }
-   
+  
+      // Set up API parameters securely
       $api_params = array(
-         'edd_action' => 'activate_license',
-         'license' => $key,
-         'item_name' => urlencode('Image map hotspot'),
-         'url' => home_url(),
-         'type' => 'imh'
+          'edd_action' => 'activate_license',
+          'license'    => sanitize_text_field($key),
+          'item_name'  => urlencode('Image map hotspot'),
+          'url'        => esc_url(home_url()),
+          'type'       => 'imh'
       );
-      
+  
+      $url = "https://demo.tcsesoft.com/";
       $response = wp_remote_post($url, array("body" => $api_params));
+  
+      if (is_wp_error($response)) {
+          echo "<p class='imh-6310-error-message'>" . esc_html($response->get_error_message()) . "</p>";
+          return;
+      }
+  
       $license_data = json_decode(wp_remote_retrieve_body($response));
-   
-      if (is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response)) {
-         if (is_wp_error($response)) {
-            $message = $response->get_error_message();
-         } else {
-            $message = __('An error occurred, please try again.');
-         }
-      } else {
-         if (false === $license_data->success) {
-            switch ($license_data->error) {
-               case 'invalid_key':
-                  $message = __('<p class="imh-6310-error-message">Your have enter invalid license key.</p>');
-                  break;
-               case 'site_inactive':
-                  $message = __('<p class="imh-6310-error-message">Your license is not active for this URL.</p>');
-                  break;
-               default:
-                  $message = __('<p class="imh-6310-error-message">An error occurred, please try again.</p>');
-                  break;
-            }
-         }
+      if (!isset($license_data->success) || !$license_data->success) {
+          $message = '<p class="imh-6310-error-message">An error occurred, please try again.</p>';
+          if (isset($license_data->error)) {
+              switch ($license_data->error) {
+                  case 'invalid_key':
+                      $message = '<p class="imh-6310-error-message">You have entered an invalid license key.</p>';
+                      break;
+                  case 'site_inactive':
+                      $message = '<p class="imh-6310-error-message">Your license is not active for this URL.</p>';
+                      break;
+              }
+          }
+          echo $message;
+          return;
       }
-   
-      if (!empty($message)) {
-         echo $message;
-         return;
-      }
-   
+  
+      // Ensure necessary functions are available for download/unzipping
       if (!function_exists('download_url')) {
-         require_once ABSPATH . 'wp-admin/includes/file.php';
-         require_once(ABSPATH . 'wp-includes/pluggable.php');
+          require_once ABSPATH . 'wp-admin/includes/file.php';
       }
-      $file_url = $license_data->download_url;
+      if (!function_exists('wp_handle_sideload')) {
+          require_once ABSPATH . 'wp-admin/includes/file.php';
+      }
+  
+      // Download and unzip the file securely
+      $file_url = esc_url($license_data->download_url);
       $tmp_file = download_url($file_url);
-      $filepath = WP_CONTENT_DIR . '/plugins';
-      WP_Filesystem();
-      copy($tmp_file, $filepath . "/{$license_data->file_name}");
-      @unlink($tmp_file);
-   
-      $zip = new ZipArchive;
-      $res = $zip->open($filepath . "/{$license_data->file_name}");
-      if (!$res) {
-         echo '<p class="imh-6310-error-message">There was an error unzipping the file.</p>';
-      } else {
-         $zip->extractTo($filepath . "/");
-         $zip->close();
-      
-         if(!$autoUpdate){
-            echo "<p class='imh-6310-success-message'>Congratulations! Your license activated successfully.</p>";		
-         }				
+  
+      if (is_wp_error($tmp_file)) {
+          echo '<p class="imh-6310-error-message">Error downloading the file.</p>';
+          return;
       }
-      wp_remote_post($url, array("body" => ['file_name' => $license_data->file_name]));
-   }
+  
+      $plugin_dir = WP_CONTENT_DIR . '/plugins/';
+      $file_name  = sanitize_file_name($license_data->file_name);
+      $file_path  = $plugin_dir . $file_name;
+  
+      $zip = new ZipArchive;
+      if ($zip->open($tmp_file) === true) {
+          $zip->extractTo($plugin_dir);
+          $zip->close();
+          @unlink($tmp_file);
+  
+          if (!$autoUpdate) {
+              echo "<p class='imh-6310-success-message'>Congratulations! Your license activated successfully.</p>";
+          }
+      } else {
+          echo '<p class="imh-6310-error-message">There was an error unzipping the file.</p>';
+      }
+  }
+  
 
    function imh_6310_fa_icon_list($startTag, $endTag) {
       $iconArray = array (
@@ -363,7 +326,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-backspace' => ['command, delete, erase, keyboard, undo', '\f55a'],
                'fas fa-backward' => ['previous, rewind', '\f04a'],
                'fas fa-bacon' => ['blt, breakfast, ham, lard, meat, pancetta, pork, rasher', '\f7e5'],
-               'fas fa-bahai' => ["bahai, bahá'í, star", '\f666'],
                'fas fa-balance-scale' => ['balanced, justice, legal, measure, weight', '\f24e'],
                'fas fa-balance-scale-left' => ['justice, legal, measure, unbalanced, weight', '\f515'],
                'fas fa-balance-scale-right' => ['justice, legal, measure, unbalanced, weight', '\f516'],
@@ -426,7 +388,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-bowling-ball' => ['alley, candlepin, gutter, lane, strike, tenpin', '\f436'],
                'fas fa-box' => ['archive, container, package, storage', '\f466'],
                'fas fa-box-open' => ['archive, container, package, storage, unpack', '\f49e'],
-               'fas fa-box-tissue' => ['cough, covid-19, kleenex, mucus, nose, sneeze, snot', '\f95b'],
                'fas fa-boxes' => ['archives, inventory, storage, warehouse', '\f468'],
                'fas fa-braille' => ['alphabet, blind, dots, raised, vision', '\f2a1'],
                'fas fa-brain' => ['cerebellum, gray matter, intellect, medulla oblongata, mind, noodle, wit', '\f5dc'],
@@ -447,7 +408,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-bus' => ['public transportation, transportation, travel, vehicle', '\f207'],
                'fas fa-bus-alt' => ['mta, public transportation, transportation, travel, vehicle', '\f55e'],
                'fas fa-business-time' => ['alarm, briefcase, business socks, clock, flight of the conchords, reminder, wednesday', '\f64a'],
-               'fab fa-buy-n-large' => ['Buy n Large', '\f8a6'],
                'fab fa-buysellads' => ['BuySellAds', '\f20d'],
                'fas fa-calculator' => ['abacus, addition, arithmetic, counting, math, multiplication, subtraction', '\f1ec'],
                'fas fa-calendar' => ['calendar-o, date, event, schedule, time, when', '\f133'],
@@ -470,7 +430,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-car-battery' => ['auto, electric, mechanic, power', '\f5df'],
                'fas fa-car-crash' => ['accident, auto, automobile, insurance, sedan, transportation, vehicle, wreck', '\f5e1'],
                'fas fa-car-side' => ['auto, automobile, sedan, transportation, travel, vehicle', '\f5e4'],
-               'fas fa-caravan' => ['camper, motor home, rv, trailer, travel', '\f8ff'],
                'fas fa-caret-down' => ['arrow, dropdown, expand, menu, more, triangle', '\f0d7'],
                'fas fa-caret-left' => ['arrow, back, previous, triangle', '\f0d9'],
                'fas fa-caret-right' => ['arrow, forward, next, triangle', '\f0da'],
@@ -574,7 +533,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-compact-disc' => ['album, bluray, cd, disc, dvd, media, movie, music, record, video, vinyl', '\f420'],
                'fas fa-compass' => ['directions, directory, location, menu, navigation, safari, travel', '\f14e'],
                'fas fa-compress' => ['collapse, fullscreen, minimize, move, resize, shrink, smaller', '\f066'],
-               'fas fa-compress-alt' => ['collapse, fullscreen, minimize, move, resize, shrink, smaller', '\f422'],
                'fas fa-compress-arrows-alt ' => ['collapse, fullscreen, minimize, move, resize, shrink, smaller', '\f78c'],
                'fas fa-concierge-bell' => ['attention, hotel, receptionist, service, support', '\f562'],
                ' fab fa-confluence' => ['atlassian', '\f78d'],
@@ -585,15 +543,9 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-cookie-bite' => ['baked good, bitten, chips, chocolate, eat, snack, sweet, treat', '\f564'],
                'fas fa-copy' => ['clone, duplicate, file, files-o, paper, paste', '\f0c5'],
                'fas fa-copyright' => ['brand, mark, register, trademark', '\f1f9'],
-               'fab fa-cotton-bureau' => ['clothing, t-shirts, tshirts', '\f89e'],
                'fas fa-couch' => ['chair, cushion, furniture, relax, sofa', '\f4b8'],
                'fab fa-cpanel' => ['cPanel ', '\f388'],
                'fab fa-creative-commons' => ['Creative Commons', '\f25e'],
-               'fab fa-creative-commons-by' => ['Creative Commons Attribution', '\f4e7'],
-               'fab fa-creative-commons-nc' => ['Creative Commons Noncommercial', '\f4e8'],
-               'fab fa-creative-commons-nc-eu' => ['Creative Commons Noncommercial (Euro Sign)', '\f4e9'],
-               'fab fa-creative-commons-nc-jp' => ['Creative Commons Noncommercial (Yen Sign)', '\f4ea'],
-               'fab fa-creative-commons-nd' => ['Creative Commons No Derivative Works', '\f4eb'],
                'fab fa-creative-commons-pd' => ['Creative Commons Public Domain', '\f4ec'],
                'fab fa-creative-commons-pd-alt' => ['Alternate Creative Commons Public Domain', '\f4ed'],
                'fab fa-creative-commons-remix' => ['Creative Commons Remix', '\f4ee'],
@@ -619,7 +571,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fab fa-cuttlefish' => ['Cuttlefish ', '\f38c'],
                'fab fa-d-and-d' => ['Dungeons & Dragons', '\f38d'],
                'fab fa-d-and-d-beyond' => ['Dungeons & Dragons, d&d, dnd, fantasy, gaming, tabletop', '\f6ca'],
-               'fab fa-dailymotion' => ['dailymotion', '\f952'],
                'fab fa-dashcube' => ['DashCube', '\f210'],
                'fas fa-database' => ['computer, development, directory, memory, storage', '\f1c0'],
                'fas fa-deaf' => ['ear, hearing, sign language', '\f2a4'],
@@ -649,7 +600,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-directions' => ['map, navigation, sign, turn', '\f5eb'],
                'fab fa-discord' => ['Discord', '\f392'],
                'fab fa-discourse' => ['Discourse', '\f393'],
-               'fas fa-disease' => ['bacteria, cancer, covid-19, illness, infection, sickness, virus', '\f7fa'],
                'fas fa-divide' => ['arithmetic, calculus, division, math', '\f529'],
                'fas fa-dizzy' => ['dazed, dead, disapprove, emoticon, face', '\f567'],
                'fas fa-dna' => ['double helix, genetic, helix, molecule, protein', '\f471'],
@@ -709,7 +659,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-exclamation' => ['alert, danger, error, important, notice, notification, notify, problem, warning', '\f12a'],
                'fas fa-exclamation-circle' => ['alert, danger, error, important, notice, notification, notify, problem, warning', '\f06a'],
                'fas fa-expand' => ['bigger, enlarge, fullscreen, resize', '\f065'],
-               'fas fa-expand-alt' => ['arrows, bigger, enlarge, fullscreen, resize', '\f424'],
                'fas fa-expand-arrows-alt' => ['bigger, enlarge, fullscreen, move, resize', '\f31e'],
                'fab fa-expeditedssl' => ['ExpeditedSSL ', '\f23e'],
                'fas fa-external-link-alt' => ['external-link, new, open, share', '\f35d'],
@@ -725,7 +674,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fab fa-fantasy-flight-games' => ['Dungeons & Dragons, d&d, dnd, fantasy, game, gaming, tabletop', '\f6dc'],
                'fas fa-fast-backward' => ['beginning, first, previous, rewind, start', '\f049'],
                'fas fa-fast-forward' => ['end, last, next', '\f050'],
-               'fas fa-faucet' => ['covid-19, drip, house, hygiene, kitchen, sink, water', '\f905'],
                'fas fa-fax' => ['business, communicate, copy, facsimile, send', '\f1ac'],
                'fas fa-feather' => ['bird, light, plucked, quill, write', '\f52d'],
                'fas fa-feather-alt' => ['bird, light, plucked, quill, write', '\f56b'],
@@ -766,7 +714,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-fire-alt' => ['burn, caliente, flame, heat, hot, popular', '\f7e4'],
                'fas fa-fire-extinguisher' => ['burn, caliente, fire fighter, flame, heat, hot, rescue', '\f134'],
                'fab fa-firefox' => ['browser', '\f269'],
-               'fab fa-firefox-browser' => ['browser', '\f907'],
                'fas fa-first-aid' => ['emergency, emt, health, medical, rescue', '\f479'],
                'fab fa-first-order' => ['First Order', '\f2b0'],
                'fab fa-first-order-alt' => ['Alternate First Order', '\f50a'],
@@ -887,9 +834,7 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-hamsa' => ['fas fa-hamsa', '\f665'],
                'fas fa-hand-holding' => ['carry, lift', '\f4bd'],
                'fas fa-hand-holding-heart' => ['carry, charity, gift, lift, package', '\f4be'],
-               'fas fa-hand-holding-medical' => ['care, covid-19, donate, help', '\f95c'],
                'fas fa-hand-holding-usd' => ['$, carry, dollar sign, donation, giving, lift, money, price', '\f4c0'],
-               'fas fa-hand-holding-water' => ['carry, covid-19, drought, grow, lift', '\f4c1'],
                'fas fa-hand-lizard' => ['game, roshambo', '\f258'],
                'fas fa-hand-middle-finger' => ['flip the bird, gesture, hate, rude', '\f806'],
                'fas fa-hand-paper' => ['game, halt, roshambo, stop', '\f256'],
@@ -901,25 +846,15 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-hand-pointer' => ['arrow, cursor, select', '\f25a'],
                'fas fa-hand-rock' => ['fist, game, roshambo', '\f255'],
                'fas fa-hand-scissors' => ['cut, game, roshambo', '\f257'],
-               'fas fa-hand-sparkles' => ['clean, covid-19, hygiene, magic, soap, wash', '\f95d'],
                'fas fa-hand-spock' => ['live long, prosper, salute, star trek, vulcan', '\f259'],
                'fas fa-hands' => ['carry, hold, lift', '\f4c2'],
                'fas fa-hands-helping' => ['aid, assistance, handshake, partnership, volunteering', '\f4c4'],
-               'fas fa-hands-wash' => ['covid-19, hygiene, soap, wash', '\f95e'],
                'fas fa-handshake' => ['agreement, greeting, meeting, partnership', '\f2b5'],
-               'fas fa-handshake-alt-slash' => ['broken, covid-19, social distance', '\f95f'],
-               'fas fa-handshake-slash' => ['broken, covid-19, social distance', '\f960'],
                'fas fa-hanukiah' => ['candle, hanukkah, jewish, judaism, light', '\f6e6'],
                'fas fa-hard-hat' => ['construction, hardhat, helmet, safety', '\f807'],
                'fas fa-hashtag' => ['Twitter, instagram, pound, social media, tag', '\f292'],
-               'fas fa-hat-cowboy' => ['buckaroo, horse, jackeroo, john b., old west, pardner, ranch, rancher, rodeo, western, wrangler', '\f8c0'],
-               'fas fa-hat-cowboy-side' => ['buckaroo, horse, jackeroo, john b., old west, pardner, ranch, rancher, rodeo, western, wrangler', '\f8c1'],
                'fas fa-hat-wizard' => ['Dungeons & Dragons, accessory, buckle, clothing, d&d, dnd, fantasy, halloween, head, holiday, mage, magic, pointy, witch', '\f6e8'],
                'fas fa-hdd' => ['cpu, hard drive, harddrive, machine, save, storage', '\f0a0'],
-               'fas fa-head-side-cough' => ['cough, covid-19, germs, lungs, respiratory, sick', '\f961'],
-               'fas fa-head-side-cough-slash' => ['cough, covid-19, germs, lungs, respiratory, sick', '\f962'],
-               'fas fa-head-side-mask' => ['breath, covid-19, filter, respirator, virus', '\f963'],
-               'fas fa-head-side-virus' => ['cold, covid-19, flu, sick', '\f964'],
                'fas fa-heading' => ['format, header, text, title', '\f1dc'],
                'fas fa-headphones' => ['audio, listen, music, sound, speaker', '\f025'],
                'fas fa-headphones-alt' => ['audio, listen, music, sound, speaker', '\f58f'],
@@ -944,7 +879,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-hospital' => ['building, covid-19, emergency room, medical center', '\f0f8'],
                'fas fa-hospital-alt' => ['building, covid-19, emergency room, medical center', '\f47d'],
                'fas fa-hospital-symbol' => ['clinic, covid-19, emergency, map', '\f47e'],
-               'fas fa-hospital-user' => ['covid-19, doctor, network, patient, primary care', '\f80d'],
                'fas fa-hot-tub' => ['bath, jacuzzi, massage, sauna, spa', '\f593'],
                'fas fa-hotdog' => ['bun, chili, frankfurt, frankfurter, kosher, polish, sandwich, sausage, vienna, weiner', '\f80f'],
                'fas fa-hotel' => ['building, inn, lodging, motel, resort, travel', '\f594'],
@@ -954,7 +888,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-hourglass-half' => ['hour, minute, sand, stopwatch, time', '\f252'],
                'fas fa-hourglass-start' => ['hour, minute, sand, stopwatch, time', '\f251'],
                'fas fa-house-damage' => ['building, devastation, disaster, home, insurance', '\f6f1'],
-               'fas fa-house-user' => ['covid-19, home, isolation, quarantine', '\f965'],
                'fab fa-houzz' => ['Houzz', '\f27c'],
                'fas fa-hryvnia' => ['currency, money, ukraine, ukrainian', '\f6f2'],
                'fab fa-html5' => ['HTML 5 Logo', '\f13b'],
@@ -966,7 +899,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-id-badge' => ['address, contact, identification, license, profile', '\f2c1'],
                'fas fa-id-card' => ['contact, demographics, document, identification, issued, profile', '\f2c2'],
                'fas fa-id-card-alt' => ['ontact, demographics, document, identification, issued, profile', '\f47f'],
-               'fab fa-ideal' => ['iDeal', '\f913'],
                'fas fa-igloo' => ['dome, dwelling, eskimo, home, house, ice, snow', '\f7ae'],
                'fas fa-image' => ['album, landscape, photo, picture', '\f03e'],
                'fas fa-images' => ['album, landscape, photo, picture', '\f302'],
@@ -1017,7 +949,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-language' => ['dialect, idiom, localize, speech, translate, vernacular', '\f1ab'],
                'fas fa-laptop' => ['computer, cpu, dell, demo, device, mac, macbook, machine, pc', '\f109'],
                'fas fa-laptop-code' => ['computer, cpu, dell, demo, develop, device, mac, macbook, machine, pc', '\f5fc'],
-               'fas fa-laptop-house' => ['computer, covid-19, device, office, remote, work from home', '\f966'],
                'fas fa-laptop-medical' => ['computer, device, ehr, electronic health records, history', '\f812'],
                'fab fa-laravel' => ['Laravel', '\f3bd'],
                'fab fa-lastfm' => ['last.fm', '\f202'],
@@ -1057,8 +988,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-long-arrow-alt-up' => ['long-arrow-up, upload', '\f30c'],
                'fas fa-low-vision' => ['blind, eye, sight', '\f2a8'],
                'fas fa-luggage-cart' => ['bag, baggage, suitcase, travel', '\f59d'],
-               'fas fa-lungs' => ['air, breath, covid-19, organ, respiratory', '\f604'],
-               'fas fa-lungs-virus' => ['breath, covid-19, respiratory, sick', '\f967'],
                'fab fa-lyft' => ['lyft', '\f3c3'],
                'fab fa-magento' => ['Magento', '\f3c4'],
                'fas fa-magic' => ['autocomplete, automatic, mage, magic, spell, wand, witch, wizard', '\f0d0'],
@@ -1084,7 +1013,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-mask' => ['carnivale, costume, disguise, halloween, secret, super hero', '\f6fa'],
                'fab fa-mastodon' => ['Mastodon', '\f4f6'],
                'fab fa-maxcdn' => ['MaxCDN', '\f136'],
-               'fab fa-mdb' => ['Material Design for Bootstrap', '\f8ca'],
                'fas fa-medal' => ['award, ribbon, star, trophy', '\f5a2'],
                'fab fa-medapps' => ['MedApps', '\f3c6'],
                'fab fa-medium' => ['Medium ', '\f23a'],
@@ -1101,7 +1029,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-menorah' => ['candle, hanukkah, jewish, judaism, light', '\f676'],
                'fas fa-mercury' => ['transgender', '\f223'],
                'fas fa-meteor' => ['armageddon, asteroid, comet, shooting star, space', '\f753'],
-               'fab fa-microblog' => ['Micro.blog', '\f91a'],
                'fas fa-microchip' => ['cpu, hardware, processor, technology', '\f2db'],
                'fas fa-microphone' => ['audio, podcast, record, sing, sound, voice', '\f130'],
                'fas fa-microphone-alt' => ['audio, podcast, record, sing, sound, voice', '\f3c9'],
@@ -1115,7 +1042,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-mitten' => ['clothing, cold, glove, hands, knitted, seasonal, warmth', '\f7b5'],
                'fab fa-mix' => ['Mix', '\f3cb'],
                'fab fa-mixcloud' => ['Mixcloud', '\f289'],
-               'fab fa-mixer' => ['Mixer', '\f956'],
                'fab fa-mizuni' => ['Mizuni', '\f3cc'],
                'fas fa-mobile' => ['pple, call, cell phone, cellphone, device, iphone, number, screen, telephone', '\f10b'],
                'fas fa-mobile-alt' => ['apple, call, cell phone, cellphone, device, iphone, number, screen, telephone', '\f3cd'],
@@ -1133,7 +1059,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-mosque' => ['building, islam, landmark, muslim', '\f678'],
                'fas fa-motorcycle' => ['bike, machine, transportation, vehicle', '\f21c'],
                'fas fa-mountain' => ['glacier, hiking, hill, landscape, travel, view', '\f6fc'],
-               'fas fa-mouse' => ['click, computer, cursor, input, peripheral', '\f8cc'],
                'fas fa-mouse-pointer' => ['arrow, cursor, select', '\f245'],
                'fas fa-mug-hot' => ['caliente, cocoa, coffee, cup, drink, holiday, hot chocolate, steam, tea, warmth', '\f7b6'],
                'fas fa-music' => ['lyrics, melody, note, sing, sound', '\f001'],
@@ -1161,7 +1086,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fab fa-openid' => ['OpenID', '\f19b'],
                'fab fa-opera' => ['Opera', '\f26a'],
                'fab fa-optin-monster' => ['Optin Monster', '\f23c'],
-               'fab fa-orcid' => ['ORCID', '\f8d2'],
                'fab fa-osi' => ['Open Source Initiative', '\f41a'],
                'fas fa-otter' => ['animal, badger, fauna, fur, mammal, marten', '\f700'],
                'fas fa-outdent' => ['lign, justify, paragraph, tab', '\f03b'],
@@ -1195,7 +1119,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-pencil-alt' => ['design, edit, pencil, update, write', '\f303'],
                'fas fa-pencil-ruler' => ['design, draft, draw, pencil', '\f5ae'],
                'fab fa-penny-arcade' => ['Dungeons & Dragons, d&d, dnd, fantasy, game, gaming, pax, tabletop', '\f704'],
-               'fas fa-people-arrows' => ['covid-19, personal space, social distance, space, spread, users', '\f968'],
                'fas fa-people-carry' => ['box, carry, fragile, help, movers, package', '\f4ce'],
                'fas fa-pepper-hot' => ['buffalo wings, capsicum, chili, chilli, habanero, jalapeno, mexican, spicy, tabasco, vegetable', '\f816'],
                'fas fa-percent' => ['discount, fraction, proportion, rate, ratio', '\f295'],
@@ -1217,7 +1140,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fab fa-pied-piper-alt' => ['Alternate Pied Piper Logo (Old)', '\f1a8'],
                'fab fa-pied-piper-hat' => ['clothing', '\f4e5'],
                'fab fa-pied-piper-pp' => ['Pied Piper PP Logo (Old)', '\f1a7'],
-               'fab fa-pied-piper-square' => ['Pied Piper Square Logo (Old)', '\f91e'],
                'fas fa-piggy-bank' => ['bank, save, savings', '\f4d3'],
                'fas fa-pills' => ['drugs, medicine, prescription, tablets', '\f484'],
                'fab fa-pinterest' => ['Pinterest', '\f0d2'],
@@ -1228,7 +1150,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-plane' => ['airplane, destination, fly, location, mode, travel, trip', '\f072'],
                'fas fa-plane-arrival' => ['airplane, arriving, destination, fly, land, landing, location, mode, travel, trip', '\f5af'],
                'fas fa-plane-departure' => ['airplane, departing, destination, fly, location, mode, take off, taking off, travel, trip', '\f5b0'],
-               'fas fa-plane-slash' => ['airplane mode, canceled, covid-19, delayed, grounded, travel', '\f969'],
                'fas fa-play' => ['audio, music, playing, sound, start, video', '\f04b'],
                'fas fa-play-circle' => ['audio, music, playing, sound, start, video', '\f144'],
                'fab fa-playstation' => ['PlayStation', '\f3df'],
@@ -1254,8 +1175,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-procedures' => ['EKG, bed, electrocardiogram, health, hospital, life, patient, vital', '\f487'],
                'fab fa-product-hunt' => ['Product Hunt', '\f288'],
                'fas fa-project-diagram' => ['chart, graph, network, pert', '\f542'],
-               'fas fa-pump-medical' => ['anti-bacterial, clean, covid-19, disinfect, hygiene, medical grade, sanitizer, soap', '\f96a'],
-               'fas fa-pump-soap' => ['anti-bacterial, clean, covid-19, disinfect, hygiene, sanitizer, soap', '\f96b'],
                'fab fa-pushed' => ['Pushed', '\f3e1'],
                'fas fa-puzzle-piece' => ['add-on, addon, game, section', '\f12e'],
                'fab fa-python' => ['Python', '\f3e2'],
@@ -1281,7 +1200,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fab fa-readme' => ['ReadMe', '\f4d5'],
                'fab fa-rebel' => ['Rebel Alliance', '\f1d0'],
                'fas fa-receipt' => ['check, invoice, money, pay, table', '\f543'],
-               'fas fa-record-vinyl' => ['LP, album, analog, music, phonograph, sound', '\f8d9'],
                'fas fa-recycle' => ['Waste, compost, garbage, reuse, trash', '\f1b8'],
                'fab fa-red-river' => ['red river', '\f3e3'],
                'fab fa-reddit' => ['reddit Logo', '\f1a1'],
@@ -1299,7 +1217,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-republican' => ['american, conservative, election, elephant, politics, republican party, right, right-wing, usa', '\f75e'],
                'fab fa-researchgate' => ['Researchgate', '\f4f8'],
                'fab fa-resolving' => ['Resolving', '\f3e7'],
-               'fas fa-restroom' => ['bathroom, john, loo, potty, washroom, waste, wc', '\f7bd'],
                'fas fa-retweet' => ['refresh, reload, share, swap', '\f079'],
                'fab fa-rev' => ['Rev.io', '\f5b2'],
                'fas fa-ribbon' => ['badge, cause, lapel, pin', '\f4d6'],
@@ -1351,12 +1268,10 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-share-square' => ['forward, save, send, social', '\f14d'],
                'fas fa-shekel-sign' => ['currency, ils, money', '\f20b'],
                'fas fa-shield-alt' => ['achievement, award, block, defend, security, winner', '\f3ed'],
-               'fas fa-shield-virus' => ['antibodies, barrier, covid-19, health, protect', '\f96c'],
                'fas fa-ship' => ['boat, sea, water', '\f21a'],
                'fas fa-shipping-fast' => ['express, fedex, mail, overnight, package, ups', '\f48b'],
                'fab fa-shirtsinbulk' => ['Shirts in Bulk', '\f214'],
                'fas fa-shoe-prints' => ['feet, footprints, steps, walk', '\f54b'],
-               'fab fa-shopify' => ['Shopify', '\f957'],
                'fas fa-shopping-bag' => ['buy, checkout, grocery, payment, purchase', '\f290'],
                'fas fa-shopping-basket' => ['buy, checkout, grocery, payment, purchase', '\f291'],
                'fas fa-shopping-cart' => ['buy, checkout, grocery, payment, purchase', '\f07a'],
@@ -1402,7 +1317,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-snowflake' => ['precipitation, rain, winter', '\f2dc'],
                'fas fa-snowman' => ['decoration, frost, frosty, holiday', '\f7d0'],
                'fas fa-snowplow' => ['clean up, cold, road, storm, winter', '\f7d2'],
-               'fas fa-soap' => ['bubbles, clean, covid-19, hygiene, wash', '\f96e'],
                'fas fa-socks' => ['business socks, business time, clothing, feet, flight of the conchords, wednesday', '\f696'],
                'fas fa-solar-panel' => ['clean, eco-friendly, energy, green, sun', '\f5ba'],
                'fas fa-sort' => ['filter, order', '\f0dc'],
@@ -1458,11 +1372,8 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-stop' => ['block, box, square', '\f04d'],
                'fas fa-stop-circle' => ['block, box, circle, square', '\f28d'],
                'fas fa-stopwatch' => ['clock, reminder, time', '\f2f2'],
-               'fas fa-stopwatch-20' => ['ABCs, countdown, covid-19, happy birthday, i will survive, reminder, seconds, time, timer', '\f96f'],
                'fas fa-store' => ['building, buy, purchase, shopping', '\f54e'],
                'fas fa-store-alt' => ['building, buy, purchase, shopping', '\f54f'],
-               'fas fa-store-alt-slash' => ['building, buy, closed, covid-19, purchase, shopping', '\f970'],
-               'fas fa-store-slash' => ['building, buy, closed, covid-19, purchase, shopping', '\f971'],
                'fab fa-strava' => ['Strava', '\f428'],
                'fas fa-stream' => ['flow, list, timeline', '\f550'],
                'fas fa-street-view' => ['directions, location, map, navigation', '\f21d'],
@@ -1484,7 +1395,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-surprise' => ['emoticon, face, shocked', '\f5c2'],
                'fab fa-suse' => ['linux, operating system, os', '\f7d6'],
                'fas fa-swatchbook' => ['Pantone, color, design, hue, palette', '\f5c3'],
-               'fab fa-swift' => ['Swift', '\f8e1'],
                'fas fa-swimmer' => ['athlete, head, man, olympics, person, pool, water', '\f5c4'],
                'fas fa-swimming-pool' => ['ladder, recreation, swim, water', '\f5c5'],
                'fab fa-symfony' => ['Symfony', '\f83d'],
@@ -1542,7 +1452,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fas fa-toggle-on' => ['switch', '\f205'],
                'fas fa-toilet' => ['bathroom, flush, john, loo, pee, plumbing, poop, porcelain, potty, restroom, throne, washroom, waste, wc', '\f7d8'],
                'fas fa-toilet-paper' => ['bathroom, covid-19, halloween, holiday, lavatory, prank, restroom, roll', '\f71e'],
-               'fas fa-toilet-paper-slash' => ['bathroom, covid-19, halloween, holiday, lavatory, leaves, prank, restroom, roll, trouble, ut oh', '\f972'],
                'fas fa-toolbox' => ['admin, container, fix, repair, settings, tools', '\f552'],
                'fas fa-tools' => ['admin, fix, repair, screwdriver, settings, tools, wrench', '\f7d9'],
                'fas fa-tooth' => ['bicuspid, dental, dentist, molar, mouth, teeth', '\f5c9'],
@@ -1552,7 +1461,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fab fa-trade-federation' => ['Trade Federation', '\f513'],
                'fas fa-trademark' => ['copyright, register, symbol', '\f25c'],
                'fas fa-traffic-light' => ['direction, road, signal, travel', '\f637'],
-               'fas fa-trailer' => ['carry, haul, moving, travel', '\f941'],
                'fas fa-train' => ['bullet, commute, locomotive, railway, subway', '\f238'],
                'fas fa-tram' => ['crossing, machine, mountains, seasonal, transportation', '\f7da'],
                'fas fa-transgender' => ['intersex', '\f224'],
@@ -1582,14 +1490,12 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fab fa-uber' => ['Uber', '\f402'],
                'fab fa-ubuntu' => ['linux, operating system, os', '\f7df'],
                'fab fa-uikit' => ['UIkit', '\f403'],
-               'fab fa-umbraco' => ['Umbraco', '\f8e8'],
                'fas fa-umbrella' => ['protection, rain, storm, wet', '\f0e9'],
                'fas fa-umbrella-beach' => ['protection, recreation, sand, shade, summer, sun', '\f5ca'],
                'fas fa-underline' => ['edit, emphasis, format, text, writing', '\f0cd'],
                'fas fa-undo' => ['back, control z, exchange, oops, return, rotate, swap', '\f0e2'],
                'fas fa-undo-alt' => ['back, control z, exchange, oops, return, swap', '\f2ea'],
                'fab fa-uniregistry' => ['Uniregistry', '\f404'],
-               'fab fa-unity' => ['Unity 3D', '\f949'],
                'fas fa-universal-access' => ['accessibility, hearing, person, seeing, visual impairment', '\f29a'],
                'fas fa-university' => ['bank, building, college, higher education - students, institution', '\f19c'],
                'fas fa-unlink' => ['attachment, chain, chain-broken, remove', '\f127'],
@@ -1647,9 +1553,6 @@ function imh_6310_search_template($ids, $cssData, $output = 0){
                'fab fa-vimeo-square' => ['Vimeo Square', '\f194'],
                'fab fa-vimeo-v' => ['vimeo', '\f27d'],
                'fab fa-vine' => ['Vine', '\f1ca'],
-               'fas fa-virus' => ['bug, covid-19, flu, health, sick, viral', '\f974'],
-               'fas fa-virus-slash' => ['bug, covid-19, cure, eliminate, flu, health, sick, viral', '\f975'],
-               'fas fa-viruses' => ['bugs, covid-19, flu, health, multiply, sick, spread, viral', '\f976'],
                'fab fa-vk' => ['VK', '\f189'],
                'fab fa-vnv' => ['VNV', '\f40b'],
                'fas fa-voicemail' => ['answer, inbox, message, phone', '\f897'],
@@ -1866,8 +1769,7 @@ function imh_6310_add_new_media($id, $results = [])
          // Save the SQL statements to a file
          file_put_contents($fileName, $file_content);
          echo '<a href="'. $path['url'].$name .'" target="_blank" id="export-image-map-hotspot-plugin">Download</a>';
-      }
-      else{
+      } else {
          echo '<a href="#" id="export-image-map-hotspot-plugin">Download</a>';
       }
    }
@@ -1887,84 +1789,580 @@ function imh_6310_add_new_media($id, $results = [])
 	
 		$wpdb->query("TRUNCATE {$style_table}");
 
-		$result = '';
-		$file = fopen($url, "r");
-		while(! feof($file)) {
-			$result .= fgets($file);
-		}
-		fclose($file);
-		if(strlen($result)) {
-			$result = explode('!@#$$#@!', $result);
-			foreach($result as $value) {
-				if(strlen(trim($value)) > 3) {
-					$wpdb->query(trim($value));
-				}
-			}
-		}
-		echo "<p style='color: green; font-size: 14px;'>Data import successfully.</p>";
-	}
+    $sql = '';
+    $prefix = explode('image-map-hotspot-backup', basename($url))[0];
+    $handle = fopen($url, 'r');
+    if ($handle) {
+        while (($line = fgets($handle)) !== false) {
+            $sql .= $line;
+
+            // Check if the line ends with a semicolon (end of a SQL statement)
+            if (substr(trim($line), -1) == ';') {
+                // Replace the prefix in the SQL command
+                $sql = str_replace($prefix, $wpdb->prefix, $sql);
+
+                // Execute the SQL statement
+                $result = $wpdb->query($sql);
+                
+                if ($result === false) {
+                    echo '<div class="notice notice-error"><p>Error executing SQL: ' . $wpdb->last_error . '</p></div>';
+                }
+
+                $sql = ''; // Reset for the next statement
+            }
+        }
+        fclose($handle);
+    } else {
+        echo '<div class="notice notice-error"><p>Could not open the SQL file for reading.</p></div>';
+        return;
+    }
+
+    echo '<div class="notice notice-success"><p>Data imported successfully from SQL file.</p></div>';
+}
+
    function imh_6310_validate_url($url){
       if ($url != '' && substr($url, 0, 7) != "http://" && substr($url, 0, 8) != "https://"){
          $url = "http://{$url}";
       }
       return $url;
    }
+  
    function imh_6310_load_templates($js, $counter, $ids) {
-      $html = "";
-      $customCSS = "";
-      
-      $customCSS .= "
-      .imh-6310-annotation-box-{$ids} .imh-6310-point-{$counter}  .imh-6310-pin-main-img {           
-         color: ".esc_attr($js->fontAwesomeIconColor).";
-         font-size: ".esc_attr($js->fontAwesomIconSize)."px;
-      }    
-      .imh-6310-annotation-box-{$ids} .imh-6310-point-{$counter} .imh-6310-pin-hover-img {           
-         color: ".esc_attr($js->fontAwesomeIconHoverColor).";
-         font-size: ".esc_attr($js->fontAwesomIconSize)."px;
-      }   
-      
-      ";      
+      $desktopSize = imh_6310_get_option('imh_6310_desktop_size');
+      $iPadSize = imh_6310_get_option('imh_6310_ipad_size');
+      $mobileSize = imh_6310_get_option('imh_6310_mobile_size');
 
-      $target = $js->openNewTab == '1' ? "target='_blank'" : '';
-      $anchorStart = $js->customIconLinkType == '1' ? "<a href='".imh_6310_validate_url(esc_attr($js->linkURL))."' {$target}>" : '';
-      $anchorEnd = $anchorStart ? '</a>' : '';
-         echo "
-         <div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}'>
-            {$anchorStart}
-               <div class='imh-6310-template-01-hover-content'>".esc_attr(str_replace("@@##!!@@", "'", $js->linkText))."</div>
-            {$anchorEnd}
-         </div>
-         ";    
+      $desktopSize = $desktopSize ? $desktopSize : 30;
+      $mobileSize = $mobileSize ? $mobileSize : 20;
+      $iPadSize = $iPadSize ? $iPadSize : $mobileSize; 
+
+      $customCSS = "";
+      $always_show = isset($js->alwaysShow) && $js->alwaysShow == 1 ? 1 : 0;      
+
+      if($js->iconType == 1) {
          $customCSS .= "
-         .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-01-hover-content{            
-            color: ".esc_attr($js->tempCommonFontColor).";
-            font-size: ".esc_attr($js->tempCommonFontSize)."px;
-            line-height: ".esc_attr($js->tempCommonFontSize + 6)."px;
-            padding: 5px 10px;
-            border-radius: 10px;
-            max-width: 200px !important;
-         }     
-        
-      ";   
+         .imh-6310-annotation-box-{$ids} .imh-6310-point-{$counter}  .imh-6310-pin-main-img {           
+            color: ".esc_attr($js->fontAwesomeIconColor).";
+            font-size: ".esc_attr($js->fontAwesomIconSize)."px;
+         }    
+         .imh-6310-annotation-box-{$ids} .imh-6310-point-{$counter} .imh-6310-pin-hover-img {           
+            color: ".esc_attr($js->fontAwesomeIconHoverColor).";
+            font-size: ".esc_attr($js->fontAwesomIconSize)."px;
+         }   
+         ";
+      } else if($js->iconType == 2){
+         $customCSS .= "
+         .imh-6310-annotation-box-{$ids} .imh-6310-point-{$counter}  .imh-6310-pin-main-img {           
+            width: ".esc_attr($js->imgOrIconSize)."px;
+            height: ".esc_attr($js->imgOrIconSize)."px;
+            border-radius: 50%;
+         } 
+         .imh-6310-annotation-box-{$ids} .imh-6310-point-{$counter} .imh-6310-pin-hover-img {           
+            width: ".esc_attr($js->imgOrIconSize)."px;
+            height: ".esc_attr($js->imgOrIconSize)."px;
+            border-radius: 50%;
+         }
+         ";
+      } else if($js->iconType == 3){
+         $customCSS .= "
+         .imh-6310-annotation-box-{$ids} .imh-6310-point-{$counter}  .imh-6310-customtext {           
+            color: ".esc_attr($js->customTextColor).";
+            font-size: ".esc_attr($js->customTextSize)."px;            
+            background-color: ".esc_attr($js->customTextBgColor).";
+            z-index:-1;
+         }      
+         ";
+      }
+
+      if($js->elementType == '1' || $js->elementType == '2'){
+         $target = $js->openNewTab == '1' ? "target='_blank'" : '';
+         $linkStatus = false;
+         if($js->customIconLinkType == '1'){
+            if(isset($js->linkPosition) && $js->linkPosition == '1'){
+               $linkStatus = true;
+            } else if(!isset($js->linkPosition)){
+               $linkStatus = true;
+            }
+         }
+
+         $anchorStart = $linkStatus ? "<a href='".imh_6310_validate_url(esc_attr($js->linkURL))."' {$target}>" : '';
+         $anchorEnd = $anchorStart ? '</a>' : '';
+
+         if($js->selectedTemplate == '01') {
+            echo "
+               <div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}' data-always-show='{$always_show}' data-imh-6310-id='{$ids}-{$counter}' style='display:none;'>
+               {$anchorStart}
+               ".
+               ($js->linkText ? "<div class='imh-6310-template-01-hover-content'><div class='imh-6310-close-button imh-6310-close-button-mobile'></div>".imh_6310_replace(esc_attr($js->linkText))."</div>" : '')
+               ."
+               {$anchorEnd}
+            </div>
+            ";    
+            $customCSS .= "
+            .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-01-hover-content{
+               background-color: ".esc_attr($js->tempCommonBgColor)." !important;
+               color: ".esc_attr($js->tempCommonFontColor).";
+               font-size: ".esc_attr($js->tempCommonFontSize)."px;
+               line-height: ".esc_attr((isset($js->tempCommonFontSize) && $js->tempCommonFontSize ? $js->tempCommonFontSize: 0) + 6)."px;
+               padding: 5px 10px;
+               border-radius: 10px;
+               max-width: 200px !important;
+            }      
+            @media screen and (min-width: 100px) and (max-width: 1366px) {
+               .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-01-hover-content {
+                  font-size:".esc_attr(isset($js->tempCommonFontSizeMobile) ? $js->tempCommonFontSizeMobile : $js->tempCommonFontSize)."px;
+                  line-height:".esc_attr((isset($js->tempCommonFontSizeMobile) && $js->tempCommonFontSizeMobile ? $js->tempCommonFontSizeMobile : $js->tempCommonFontSize) + 6)."px;
+               }
+            } 
+            ";   
+         }
+         else if($js->selectedTemplate == '02') {        
+            echo "
+            <div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}' 
+               data-always-show='{$always_show}' data-imh-6310-id='{$ids}-{$counter}' style='display:none;'>
+               <div class='imh-6310-tooltip imh-6310-template-02'>      
+                  <div class='imh-6310-template-02-hover-content'>
+                     <div class='imh-6310-template-01-hover-content'>
+                        <div class='imh-6310-close-button imh-6310-close-button-mobile'></div>
+                        <div class='imh-6310-template-02-content'>
+                        ".imh_6310_create_embedded_code($js->tem02EmbeddedLink)."                                     
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            ";
+         }
+         else if($js->selectedTemplate == '03') {
+            echo "
+            <div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}' 
+               data-always-show='{$always_show}' data-imh-6310-id='{$ids}-{$counter}' style='display:none;'>
+               {$anchorStart}
+                  <div class='imh-6310-template-03-hover-content'>
+                     <div class='imh-6310-template-01-hover-content'>
+                        <div class='imh-6310-close-button imh-6310-close-button-mobile'></div>
+                        <div class='imh-6310-template-03-tooltip-testimonial'>
+                           <div class='imh-6310-template-03-tooltip-pic'>
+                              <img src='{$js->openDesImg}' alt=''>
+                           </div>
+                           <div class='imh-6310-template-03-tooltip-testimonial-content'>
+                              <div class='imh-6310-template-03-tooltip-testimonial-title'>".imh_6310_replace(esc_attr($js->linkText))."</div>
+                              <div class='imh-6310-template-03-tooltip-description'>
+                                 ".esc_attr($js->openDescription)."
+                              </div>                    
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               {$anchorEnd}
+            </div>
+            ";
+            $customCSS .= "
+               .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-03-hover-content{
+                  width: ".esc_attr(isset($js->tooltipWidth) ? $js->tooltipWidth : 400)."px;
+               }
+               .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-03-tooltip-testimonial{
+                  background-color: ".esc_attr($js->tempCommonBgColor).";
+               }
+               .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-03-tooltip-testimonial .imh-6310-template-03-tooltip-testimonial-title{
+                  font-size: ".esc_attr($js->tempCommonFontSize)."px;
+                  line-height: ".esc_attr((isset($js->tempCommonFontSize) && $js->tempCommonFontSize ? $js->tempCommonFontSize: 0) + 6)."px;
+                  color: ".esc_attr($js->tempCommonFontColor).";
+                  padding-bottom:5px;
+               }
+               .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-03-tooltip-testimonial .imh-6310-template-03-tooltip-description{
+                  color: ".esc_attr($js->openDesFontColor).";
+                  font-size:".esc_attr($js->openDesFontSize)."px;
+                  line-height:".esc_attr((isset($js->openDesFontSize) && $js->openDesFontSize ? $js->openDesFontSize: 0) + 6)."px;
+               }
+               @media screen and (min-width: 100px) and (max-width: 1366px) {
+                     .imh-6310-template-03-tooltip-testimonial-title{margin-top: 40px !important;}
+                     .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-03-tooltip-testimonial .imh-6310-template-03-tooltip-description{
+                        font-size:".esc_attr(isset($js->openDesFontSizeMobile) ? $js->openDesFontSizeMobile : $js->openDesFontSize)."px;
+                     }
+                     .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-03-tooltip-testimonial .imh-6310-template-03-tooltip-testimonial-title{
+                        font-size:".esc_attr(isset($js->tempCommonFontSizeMobile) ? $js->tempCommonFontSizeMobile : $js->tempCommonFontSize)."px;
+                        line-height:".esc_attr((isset($js->tempCommonFontSizeMobile) && $js->tempCommonFontSizeMobile ? $js->tempCommonFontSizeMobile : $js->tempCommonFontSize) + 6)."px;
+                     }
+               }     
+            ";
+         }
+         else if($js->selectedTemplate == '04') {        
+            echo "<div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}' 
+                     data-always-show='{$always_show}' data-imh-6310-id='{$ids}-{$counter}' style='display:none;'>
+                     {$anchorStart}
+                        <div class='imh-6310-template-01-hover-content'>
+                           <div class='imh-6310-close-button imh-6310-close-button-mobile'></div>
+                           <div class='imh-6310-template-04-tooltip-testimonial'>
+                              <div class='imh-6310-template-04-tooltip-testimonial-content'>
+                                 <div class='imh-6310-template-04-tooltip-pic'>
+                                    <img src='{$js->openDesImg}'>
+                                 </div>
+                                 <div class='imh-6310-template-04-tooltip-title'>".
+                                    imh_6310_replace(esc_attr($js->linkText))."
+                                 </div>
+                                 <div class='imh-6310-template-04-tooltip-description'>
+                                 ".imh_6310_replace(esc_attr($js->openDescription))."
+                                 </div>        
+                              </div>
+                           </div> 
+                        </div>   
+                     {$anchorEnd}
+                  </div>";
          
+            $customCSS .= "
+               .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-04-tooltip-testimonial{
+                  width: ".esc_attr(isset($js->tooltipWidth) ? $js->tooltipWidth : 400)."px;
+                  background: ".esc_attr($js->tempCommonBgColor).";     
+                  text-decoration: none !important;   
+               }  
+               .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-04-tooltip-title{        
+                  color: ".esc_attr($js->tempCommonFontColor).";
+                  font-size:".esc_attr($js->tempCommonFontSize)."px;
+                  line-height:".esc_attr((isset($js->tempCommonFontSize) && $js->tempCommonFontSize ? $js->tempCommonFontSize: 0) + 6)."px;
+                  text-decoration: none !important; ;
+               }  
+               .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-04-tooltip-description{        
+                  color: ".esc_attr($js->openDesFontColor).";
+                  font-size:".esc_attr($js->openDesFontSize)."px;
+                  line-height:".esc_attr((isset($js->openDesFontSize) && $js->openDesFontSize ? $js->openDesFontSize: 0) + 6)."px;
+                  text-decoration:none !important;
+               }      
+               @media screen and (min-width: 100px) and (max-width: 1366px) {
+                  .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-04-tooltip-title{  
+                     font-size:".esc_attr(isset($js->tempCommonFontSizeMobile) ? $js->tempCommonFontSizeMobile : $js->tempCommonFontSize)."px;
+                     line-height:".esc_attr((isset($js->tempCommonFontSizeMobile) && $js->tempCommonFontSizeMobile ? $js->tempCommonFontSizeMobile : $js->tempCommonFontSize) + 6)."px;
+                  }
+                  .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-04-tooltip-description{    
+                     font-size:".esc_attr(isset($js->openDesFontSizeMobile) ? $js->openDesFontSizeMobile : $js->openDesFontSize)."px;
+                  }
+               }
+            ";
+         }
+         else if($js->selectedTemplate == '05') {  
+            echo "
+            <div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}' 
+               data-always-show='{$always_show}' data-imh-6310-id='{$ids}-{$counter}' style='display:none;'>
+               {$anchorStart}
+                  <div class='imh-6310-template-05-hover-content'>
+                     <div class='imh-6310-template-01-hover-content'>
+                        <div class='imh-6310-close-button imh-6310-close-button-mobile'></div>
+                        <div class='imh-6310-template-05-tooltip-testimonial'>
+                           <div class='imh-6310-template-05-tooltip-testimonial-content'>
+                              <div class='imh-6310-template-05-tooltip-pic'>
+                                 <img src='".esc_attr($js->openDesImg)."'>
+                              </div>
+                              <div class='imh-6310-template-05-tooltip-title'>".imh_6310_replace(esc_attr($js->linkText))."</div>
+                           </div>
+                           <div class='imh-6310-template-05-tooltip-description'>
+                                 ".imh_6310_replace(esc_attr($js->openDescription))."   
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               {$anchorEnd}
+            </div>
+            ";
+            $customCSS .= "
+            .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-05-hover-content{
+               width: ".esc_attr(isset($js->tooltipWidth) ? $js->tooltipWidth : 400)."px;
+               background: ".esc_attr($js->tempCommonBgColor).";        
+            }  
+            .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-05-tooltip-testimonial-content .imh-6310-template-05-tooltip-title {        
+               color: ".esc_attr($js->tempCommonFontColor).";
+               font-size:".esc_attr($js->tempCommonFontSize)."px;
+               line-height:".esc_attr((isset($js->tempCommonFontSize) && $js->tempCommonFontSize ? $js->tempCommonFontSize: 0) + 6)."px;
+            }    
+
+            .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-05-tooltip-description {
+               color: ".esc_attr($js->openDesFontColor).";
+               font-size:".esc_attr($js->openDesFontSize)."px;
+               line-height:".esc_attr((isset($js->openDesFontSize) && $js->openDesFontSize ? $js->openDesFontSize: 0) + 6)."px;
+            }
+            @media screen and (min-width: 100px) and (max-width: 1366px) {
+               .imh-6310-hover-content-{$ids}-{$counter}  .imh-6310-template-05-tooltip-testimonial-content .imh-6310-template-05-tooltip-title {  
+                  font-size:".esc_attr(isset($js->tempCommonFontSizeMobile) ? $js->tempCommonFontSizeMobile : $js->tempCommonFontSize)."px;
+                  line-height:".esc_attr((isset($js->tempCommonFontSizeMobile) && $js->tempCommonFontSizeMobile ? $js->tempCommonFontSizeMobile : $js->tempCommonFontSize) + 6)."px;
+               }
+               .imh-6310-template-05-tooltip-description{width: calc(100% - 16px) !important;}
+               .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-05-tooltip-description {
+                  font-size:".esc_attr(isset($js->openDesFontSizeMobile) ? $js->openDesFontSizeMobile : $js->openDesFontSize)."px;
+               }
+            }     
+            ";
+            
+         }
+      } else if( $js->elementType == '3' ){
+         echo "
+         <div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}' 
+            data-always-show='{$always_show}' data-imh-6310-id='{$ids}-{$counter}' style='display:none;'>
+            <div class='imh-6310-template-01-hover-content'>
+               <div class='imh-6310-close-button imh-6310-close-button-mobile'></div>  
+               ".imh_6310_replace($js->customeHtmlCode)."   
+            </div>
+         </div>";
+         
+         $customCSS .= imh_6310_replace($js->customeCssCode);   
+      }
+
+
+      if(isset($js->selectedTemplate) && $js->selectedTemplate != '02' && $js->openPopup == '2' && $js->elementType != '3'){
+         echo "<div class='imh-6310-modal imh-6310-popup-{$ids}-{$counter}' style='display:none;'>
+                  <div class='imh-6310-modal-content imh-6310-modal-xl'>
+                     <div class='imh-6310-popup'>
+                        <div class='imh-6310-close-button'></div>
+                        ".imh_6310_create_embedded_code($js->customeCodePopup)."
+                     </div>
+                  </div>
+               </div>";
+
+         $customCSS .= "@media screen and (min-width: 100px) and (max-width: 1366px) {.imh-6310-hover-content-{$ids}-{$counter}{display: none}}";
+      } else if(isset($js->selectedTemplate) && $js->selectedTemplate != '02' && $js->openPopup == '3' && $js->elementType != '3'){
+         echo "
+            <div class='imh-6310-modal imh-6310-popup-{$ids}-{$counter}' style='display:none;'>
+               <div class='imh-6310-modal-content imh-6310-modal-xl'>
+                  <div class='imh-6310-popup'>
+                     <div class='imh-6310-template-01-hover-content'>
+                        <div class='imh-6310-close-button'></div>
+                        ".imh_6310_replace($js->popupCustomHtml)."
+                     </div>
+                  </div>
+               </div>
+            </div>
+         ";
+
+         $customCSS .= "
+            .imh-6310-popup-{$ids}-{$counter} {
+               box-sizing: border-box !important;
+            }
+            .imh-6310-popup-{$ids}-{$counter} .imh-6310-modal-content{              
+                  width: 100% !important; 
+                  max-width: 350px !important; 
+                  height: auto !important
+            }";
+         $customCSS .= imh_6310_replace($js->popupCustomCss);
+         $customCSS .= "@media screen and (min-width: 100px) and (max-width: 1366px) {.imh-6310-hover-content-{$ids}-{$counter}{display: none}}";
+      } else if($js->elementType == '5') {
+         echo "
+         <div class='imh-6310-hover-content imh-6310-hover-content-{$ids}-{$counter}' 
+            data-always-show='{$always_show}' data-imh-6310-id='{$ids}-{$counter}' style='display:none;'>
+            <div class='imh-6310-woocommerce-product'>
+               <div class='imh-6310-close-button imh-6310-close-button-mobile'></div>";  
+               imh_6310_woocommerce_product($js->productIds);
+
+         echo   "</div>
+         </div>";
+
+         $customCSS .= "
+            .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-woocommerce-product{
+               width: ".esc_attr(isset($js->productBoxWidth) ? $js->productBoxWidth : 500)."px;
+               background: ".esc_attr(isset($js->productBoxBgColor) ? $js->productBoxBgColor : 'rgb(255, 255, 255)').";
+               padding: 15px 15px 10px;
+               border-radius: 5px;
+               display: grid;
+               grid-template-columns: repeat(".esc_attr(isset($js->productPerRowDesk)&&$js->productPerRowDesk ? $js->productPerRowDesk : 3).", 1fr);
+               gap: 15px;
+               box-shadow: 0 0 10px #aaa;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-woocommerce-product-col{
+               position: relative;
+               display: flex;
+               flex-direction: column;
+               justify-content: space-between;
+               align-items: center;
+               border: 1px solid #ccc;
+               padding: 15px;
+               box-sizing: border-box;
+               border-radius: 5px;
+               overflow: hidden;
+               transition: all 0.5s ease 0s;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-woocommerce-product-col:hover{
+               background: ".esc_attr(isset($js->productBoxHoverColor) && $js->productBoxHoverColor ? $js->productBoxHoverColor : 'rgb(240, 240, 240)').";
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .woocommerce-loop-product__title{
+               font-size: ".esc_attr(isset($js->productTitleFontSize) && $js->productTitleFontSize ? $js->productTitleFontSize : 18)."px;
+               color: ".esc_attr(isset($js->productTitleColor) ? $js->productTitleColor : '#000').";
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-woocommerce-product-col:hover .woocommerce-loop-product__title{
+               color: ".esc_attr(isset($js->productTitleHoverColor) ? $js->productTitleHoverColor : '#423831').";
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .button{
+               padding: 10px 15px !important;
+               font-size: .8rem;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} del .woocommerce-Price-amount bdi{
+               font-size: ".esc_attr(isset($js->productPriceFontSize) ? $js->productPriceFontSize : 16)."px !important;
+               line-height: ".(esc_attr(isset($js->productPriceFontSize) && $js->productPriceFontSize ? $js->productPriceFontSize : 16) + 6)."px !important;
+               color: ".esc_attr(isset($js->productDisPriceColor) ? $js->productDisPriceColor : 'rgb(255, 0, 0)')." !important;
+               text-decoration: line-through !important;
+               text-decoration-color: ".esc_attr(isset($js->productDisPriceColor) ? $js->productDisPriceColor : 'rgb(255, 0, 0)')." !important;
+               text-decoration-thickness: 3px;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} ins .woocommerce-Price-amount *{
+               font-size: ".esc_attr(isset($js->productPriceFontSize) ? $js->productPriceFontSize : 16)."px !important;
+               color: ".esc_attr(isset($js->productPriceColor) ? $js->productPriceColor : 'rgb(4, 107, 210)')." !important;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .sip-product-control-container a{
+               font-size: ".esc_attr(isset($js->productBtnFontSize) ? $js->productBtnFontSize : 18)."px !important;
+               color: ".esc_attr(isset($js->productBtnColor) ? $js->productBtnColor : 'rgb(255, 255, 255)')." !important;
+               border-color: ".esc_attr(isset($js->productBtnBgColor) ? $js->productBtnBgColor : 'rgb(4, 107, 210)')." !important;
+               background-color: ".esc_attr(isset($js->productBtnBgColor) ? $js->productBtnBgColor : 'rgb(4, 107, 210)')." !important;
+               margin-top: 7px;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .sip-product-control-container .added_to_cart{
+               padding: 7px 15px 6px !important;
+               margin-left: 7px !important;
+               display: inline-block !important;
+               border-radius: 5px !important;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .sip-product-control-container a:hover{
+               color: ".esc_attr(isset($js->productBtnHoverColor) ? $js->productBtnHoverColor : 'rgb(245, 245, 245)')." !important;
+               border-color: ".esc_attr(isset($js->productBtnBgHoverColor) ? $js->productBtnBgHoverColor : 'rgb(210, 100, 72)')." !important;
+               background-color: ".esc_attr(isset($js->productBtnBgHoverColor) ? $js->productBtnBgHoverColor : 'rgb(210, 100, 72)')." !important;
+            }
+
+
+            ";
+         $customCSS .= imh_6310_replace($js->popupCustomCss);
+         $customCSS .= "@media screen and (min-width: 100px) and (max-width: 1366px) {
+            .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-woocommerce-product{
+               width: calc(98% - {$iPadSize}px);
+               margin: 0 calc(1% + ".($iPadSize/2)."px);
+               box-sizing: border-box;
+               grid-template-columns: repeat(".esc_attr(isset($js->productPerRowMob) && $js->productPerRowMob ? $js->productPerRowMob : 2).", 1fr);
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .woocommerce-loop-product__title{
+               font-size: ".(esc_attr(isset($js->productTitleFontSize) && $js->productTitleFontSize ? $js->productTitleFontSize : 18) * .8)."px;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .button{
+               margin-top: 7px !important;
+            }
+            .imh-6310-hover-content-{$ids}-{$counter} .add_to_cart_button{
+               font-size: ".(esc_attr(isset($js->productBtnFontSize) && $js->productBtnFontSize ? $js->productBtnFontSize : 18) * .8)."px !important;
+            }
+         }";
+      }else if($js->elementType == '6') {
+         //Shortcode
+         echo "
+         <div class='imh-6310-hover-content imh-6310-plugin-shortcode imh-6310-hover-content-{$ids}-{$counter}' 
+            data-always-show='{$always_show}' data-imh-6310-id='{$ids}-{$counter}' style='display:none;'>
+            <div class='imh-6310-template-06-hover-content'>
+               <div class='imh-6310-close-button imh-6310-close-button-mobile'></div>  
+               ".
+              (isset($js->pluginShortCode) && $js->pluginShortCode ?  do_shortcode($js->pluginShortCode) : 'No ShortCode found')
+               ."
+            </div>
+         </div>";
+
+         $customCSS .= "
+            .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-06-hover-content{
+               width: 600px;
+               background: #FFF;
+               padding: 15px; 
+            }
+            @media screen and (max-width: 1366px) {
+               .imh-6310-hover-content-{$ids}-{$counter} .imh-6310-template-06-hover-content{
+                  width: 370px;
+               }
+            }
+            ";
+          
+      }
    
 
-   wp_register_style("imh-6310-custom-" . esc_attr($ids) . "-" . esc_attr($counter) . "-css", "");
-   wp_enqueue_style("imh-6310-custom-" . esc_attr($ids) . "-" . esc_attr($counter) . "-css");
-   wp_add_inline_style("imh-6310-custom-" . esc_attr($ids) . "-" . esc_attr($counter) . "-css", $customCSS);
-
-   wp_register_script("imh-6310-template-" . esc_attr($counter) . "-js", "");
-   wp_enqueue_script("imh-6310-template-" . esc_attr($counter) . "-js");
-   wp_add_inline_script("imh-6310-template-" . esc_attr($counter) . "-js", $html); 
+      wp_register_style("imh-6310-custom-" . esc_attr($ids) . "-" . esc_attr($counter) . "-css", "");
+      wp_enqueue_style("imh-6310-custom-" . esc_attr($ids) . "-" . esc_attr($counter) . "-css");
+      wp_add_inline_style("imh-6310-custom-" . esc_attr($ids) . "-" . esc_attr($counter) . "-css", $customCSS);
    }
 
 
-   function imh_6310_check_field_exists(){
-      global $wpdb;
-
-      $imh_6310_selected_server = imh_6310_get_option('imh_6310_selected_server');
-      if(!$imh_6310_selected_server){
-         $wpdb->query("DELETE FROM {$wpdb->prefix}options where option_name='imh_6310_selected_server'");
-         $wpdb->query("INSERT INTO {$wpdb->prefix}options(option_name, option_value) VALUES ('imh_6310_selected_server', '1')");
+   function imh_6310_create_embedded_code($embeddedCode) {
+      if (!$embeddedCode) return;
+      $embeddedCode = explode("AABBAA", $embeddedCode);
+      $allAttrName = explode("XXYYXX", $embeddedCode[0]);
+      $allAttrValue = explode("XXYYXX", $embeddedCode[1]);
+    
+      $htmlCode = "";
+      if (
+        count($allAttrName) &&
+        count($allAttrValue) &&
+        count($allAttrName) == count($allAttrValue)
+      ) {
+        for ($i = 0; $i < count($allAttrName); $i++) {
+          $htmlCode .= " " . $allAttrName[$i] . '="' . $allAttrValue[$i] . '"';
+        }
       }
-   }
+    
+      if ($htmlCode) {
+        $htmlCode = "<iframe" . $htmlCode . " style='border: 2px solid #FFF !important'></iframe>";
+      }
+      return $htmlCode;
+    }
+    
+    function imh_6310_woocommerce_product($ids){
+      if(!$ids){
+         echo "<h3>No product found.</h3>";
+         return;
+      }
+      $ids = explode(',', $ids);
+      global $post;
+      foreach($ids as $id){
+         echo "<div class='imh-6310-woocommerce-product-col'>";
+         $post = get_post($id, OBJECT);
+         setup_postdata($post);
+
+         global $product;
+
+         woocommerce_template_loop_product_link_open();
+
+         woocommerce_show_product_loop_sale_flash();
+         woocommerce_template_loop_product_thumbnail();
+
+         woocommerce_template_loop_product_title();
+
+         woocommerce_template_loop_price();
+
+         woocommerce_template_loop_product_link_close();
+
+         echo '<div class="sip-product-control-container">';
+         woocommerce_template_loop_add_to_cart();
+         echo '<a href="' . get_the_permalink() . '" class="button">' . esc_html('Details', 'image-point') . '</a>';
+         echo '</div>';
+         echo '</div>';
+      }
+
+      wp_reset_postdata();
+    }
+
+    function imh_6310_render_products() {
+      if (!class_exists('WooCommerce')) {
+          echo '<p>WooCommerce is not active.</p>';
+          return;
+      }
+  
+      $products = wc_get_products(['limit' => -1]);
+  
+      if (empty($products)) {
+          echo '<p>No products found.</p>';
+          return;
+      }
+  
+      echo '<div class="imh-6310-search-container">';
+      echo '<input type="text" id="imh-6310-product-search" placeholder="Type to search for products">';
+      echo '<div class="imh-6310-suggestion-list imh-6310-hidden">';
+  
+      foreach ($products as $product) {
+          $image_url = wp_get_attachment_image_url($product->get_image_id(), 'full');
+  
+          echo "<div class='imh-6310-product-list imh-6310-hidden'
+                  data-product-id='{$product->get_id()}'
+                  data-product-img='{$image_url}'>
+                  {$product->get_name()}
+                </div>";
+      }
+  
+      echo '</div>';
+      echo '<div class="imh-6310-no-product imh-6310-hidden">No product found.</div>';
+      echo '</div>';
+  }

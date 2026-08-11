@@ -24,12 +24,45 @@
                 </td>
                 <td>
                   <input type="radio" name="display_type" value="0" checked> Hover &nbsp;&nbsp;&nbsp;
-                  <input type="radio" name="display_type" value="1" <?php echo isset($styledata['display_type']) && ($styledata['display_type'] == 1) ? ' checked' : '' ?> disabled> Click
+                  <input type="radio" name="display_type" value="1" <?php echo isset($styledata['display_type']) && ($styledata['display_type'] == 1) ? ' checked' : '' ?>> Click
+                </td>
+              </tr>
+              <tr height="45">
+                <td>
+                    <b>Tooltip Position</b>
+                </td>
+                <td>
+                  <select name="tooltip_position" class="imh-6310-form-input">
+                  <?php
+                    $arr = ['Auto Adjust', 'Top Right', 'Center Right', 'Bottom Right', 'Top Left', 'Center Left', 'Bottom Left'];
+                    $tooltip_position  = isset($cssData['tooltip_position']) ? esc_attr($cssData['tooltip_position']) : 0;
+                    foreach($arr as $key=>$value){
+                      $selected = $key == $tooltip_position ? ' selected' : '';
+                      echo "<option value='{$key}'{$selected}>{$value}</option>";
+                    }
+                  ?>
+                  </select>
+                </td>
+              </tr>
+              <tr height="45" class="tooltip-attribute">
+                <td>
+                    <b class="tooltip-attribute-text-1"></b>
+                </td>
+                <td>
+                <input type="number" class="imh-6310-form-input" required autocomplete="off" name="top_bottom" value="<?php echo isset($cssData['top_bottom']) ? esc_attr($cssData['top_bottom']) : 0 ?>">
+                </td>
+              </tr>
+              <tr height="45" class="tooltip-attribute">
+                <td>
+                    <b class="tooltip-attribute-text-2"></b>
+                </td>
+                <td>
+                <input type="number" class="imh-6310-form-input" required autocomplete="off" name="left_right" value="<?php echo isset($cssData['left_right']) ? esc_attr($cssData['left_right']) : 0 ?>">
                 </td>
               </tr>
               <tr>
                 <td>
-                <b>Custom CSS <span class="imh-6310-pro">(Pro)</span>:</b></b>
+                  <b>Custom CSS</b>
                 </td>
                 <td>
                   <textarea class="imh-6310-form-input" name="custom_css" rows="10"><?php echo isset($cssData['custom_css']) ? esc_attr($cssData['custom_css']) : '' ?></textarea>
@@ -41,7 +74,7 @@
             <table class="table table-responsive imh_6310_admin_table">
               <tr height="50">
                 <td>
-                  <b>Display Zoom Feature <span class="imh-6310-pro">(Pro)</span>:</b><br />
+                  <b>Display Zoom Feature:</b><br />
                 </td>
                 <td>
                   <input type="radio" name="zoom_feature" value="1" checked>No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -50,7 +83,7 @@
               </tr>
               <tr height="50" class="toggle-zoom-feature">
                 <td>
-                  <b>Display Device Type <span class="imh-6310-pro">(Pro)</span>:</b><br />
+                  <b>Display Device Type:</b><br />
                 </td>
                 <td>
                   <select name="display_device" class="imh-6310-form-input">
@@ -62,7 +95,7 @@
               </tr>
               <tr height="50" class="toggle-zoom-feature">
                 <td>
-                  <b>Zoom In Icon <span class="imh-6310-pro">(Pro)</span>:</b><br />
+                  <b>Zoom In Icon:</b><br />
                 </td>
                 <td style="display: flex; align-items: center; padding-top: 10px">
                   <input type="hidden" name="zoom_in_icon" value="<?php echo isset($cssData['zoom_in_icon']) && $cssData['zoom_in_icon'] ? esc_attr($cssData['zoom_in_icon']) : imh_6310_plugin_dir_url . 'assets/images/zoom-in.png' ?>" />
@@ -72,7 +105,7 @@
               </tr>
               <tr height="50" class="toggle-zoom-feature" style="background: #f2f2f2 !important;">
                 <td>
-                  <b>Zoom Out Icon <span class="imh-6310-pro">(Pro)</span>:</b><br />
+                  <b>Zoom Out Icon:</b><br />
                 </td>
                 <td style="display: flex; align-items: center; padding-top: 10px">
                   <input type="hidden" name="zoom_out_icon" value="<?php echo isset($cssData['zoom_out_icon']) && $cssData['zoom_out_icon'] ? esc_attr($cssData['zoom_out_icon']) : imh_6310_plugin_dir_url . 'assets/images/zoom-out.png' ?>" />
@@ -82,7 +115,7 @@
               </tr>
               <tr height="50" class="toggle-zoom-feature" style="background: #fff !important;">
                 <td>
-                  <b>Desktop Icon Size <span class="imh-6310-pro">(Pro)</span>:</b><br />
+                  <b>Desktop Icon Size:</b><br />
                 </td>
                 <td>
                   <input type="number" class="imh-6310-form-input" name="desktop_icon_size" value="<?php echo isset($cssData['desktop_icon_size']) ? esc_attr($cssData['desktop_icon_size']) : '30' ?>" />
@@ -90,7 +123,7 @@
               </tr>
               <tr height="50" class="toggle-zoom-feature" style="background: #f2f2f2 !important;">
                 <td>
-                  <b>Mobile Icon Size <span class="imh-6310-pro">(Pro)</span>:</b><br />
+                  <b>Mobile Icon Size:</b><br />
                 </td>
                 <td>
                   <input type="number" class="imh-6310-form-input" name="mobile_icon_size" value="<?php echo isset($cssData['mobile_icon_size']) ? esc_attr($cssData['mobile_icon_size']) : '25' ?>" />
@@ -98,11 +131,11 @@
               </tr>
               <tr height="50" class="toggle-zoom-feature" style="background: #fff !important;">
                 <td>
-                  <b>Icon Position <span class="imh-6310-pro">(Pro)</span>:</b><br />
+                  <b>Icon Position:</b><br />
                 </td>
                 <td>
                   <select name="icon_position" class="imh-6310-form-input">
-                    <?php
+                  <?php
                       $positions = [
                         'right-top' => 'Right Top',
                         'right-bottom' => 'Right Bottom',
@@ -123,7 +156,7 @@
                 </td>
               </tr>
               <tr height="40px" class="toggle-zoom-feature toggle-zoom-feature-background" style="background: #f2f2f2 !important;">
-                <td><label class="imh-6310-form-label" for="icons">Icon Background:</label><span class="imh-6310-pro">(Pro)</span></td>
+                <td><label class="imh-6310-form-label" for="icons">Icon Background:</label></td>
                 <td>
                   <input type="text" name="icon_background" class="imh_6310_icon_background imh-6310-form-input imh_6310_color_picker" data-opacity="0.8" data-format="rgb" value="<?php echo isset($cssData['icon_background']) ? esc_attr($cssData['icon_background']) : 'rgba(0, 0, 0, 0.9)' ?>">
                 </td>

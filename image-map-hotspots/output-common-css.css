@@ -14,16 +14,24 @@
   display: none;
 }
 
-.imh-6310-point-icons, .imh-6310-point-icons *{
+.imh-6310-point-icons,
+.imh-6310-point-icons * {
   float: left;
 }
 
 .imh-6310-annotation-box {
-  width: 100% !important;
-  background: #fff;
+  width: 100%;
   padding: 0;
   position: relative;
   max-width: 100% !important;
+  overflow: hidden;
+}
+
+.imh-6310-annotation-box-inner {
+  transition: transform 0.3s ease;
+}
+.imh-6310-annotation-box-inner:active {
+  cursor: grabbing;
 }
 
 .imh-6310-annotation-box .imh-6310-main-image {
@@ -75,20 +83,21 @@
 
 .imh-6310-template-01-hover-content {
   width: auto;
-  color: rgb(0, 0, 0); 
-  background-color: #fefefe;
+  background-color: transparent;
+  color: rgb(0, 0, 0);
   text-align: center;
   border-radius: 6px;
-  padding: 8px;
-  z-index: 1; 
+  z-index: 1;
   float: left;
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 /* temp 02 */
 
 .imh-6310-template-02-hover-content {
-  background-color: black;
+  background-color: transparent;
   color: #fff;
   text-align: center;
   position: relative;
@@ -126,7 +135,6 @@
 /* temp 03 */
 
 .imh-6310-template-03-hover-content {
-  width: 400px;
   transition: 0.5s;
   position: relative;
   z-index: 1;
@@ -210,7 +218,6 @@
 /* temp 04 */
 
 .imh-6310-template-04-tooltip-testimonial {
-  width: 400px;
   background: #3e2a41;
   transition: 0.5s;
   bottom: 0;
@@ -268,7 +275,6 @@
 /* temp 05 */
 
 .imh-6310-template-05-hover-content {
-  width: 400px;
   background: #3e2a41;
   transition: 0.5s;
   bottom: 0;
@@ -279,24 +285,23 @@
 
 .imh-6310-template-05-hover-content .imh-6310-template-05-tooltip-testimonial {
   margin: 20px 0;
-  display: flex;
+  float: left;
+  width: 100%;
 }
 
 .imh-6310-template-05-tooltip-testimonial-content {
-  width: 100%;
+  width: calc(50% - 8px);
   float: left;
-  display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 8px;
+  margin: 8px 0 8px 8px;
 }
 
 .imh-6310-template-05-tooltip-pic {
-  width: 90%;
+  width: 100%;
   border-radius: 50%;
   margin: 0 auto;
   overflow: hidden;
-  border: 8px solid rgba(255, 255, 255, 0.15);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -326,6 +331,9 @@
   margin: 8px;
   font-family: sans-serif;
   line-height: 20px;
+  float: left;
+  width: calc(50% - 16px);
+  text-align: left;
 }
 
 /* media queries  */
@@ -334,7 +342,7 @@
   /* temp 03 */
 
   .imh-6310-template-03-hover-content {
-    width: 100%;
+    width: 300px;
   }
   .imh-6310-template-03-tooltip-testimonial {
     display: flex;
@@ -363,7 +371,7 @@
   /* temp 04 */
 
   .imh-6310-template-04-tooltip-testimonial {
-    width: 100%;
+    width: 300px;
   }
   .imh-6310-template-04-tooltip-pic {
     /* width: 50%; */
@@ -372,7 +380,7 @@
   /* temp 05 */
 
   .imh-6310-template-05-tooltip-testimonial {
-    width: 100%;
+    width: 300px;
   }
   .imh-6310-template-05-tooltip-testimonial {
     flex-direction: column;
@@ -410,13 +418,12 @@
   line-height: 30px;
   border-radius: 10px;
 }
-/* output model sectio  */
-.imh-6310-modal{
+/* output model section  */
+.imh-6310-modal {
   display: none;
   position: fixed;
   z-index: 9999;
   padding-top: 70px;
-  padding-bottom: 50px;
   left: 0;
   top: 0;
   width: 100%;
@@ -431,10 +438,38 @@
   padding: 0;
   width: 70%;
   padding: 0;
-  box-shadow: 0 0 12px 1px rgba(0, 0, 0, .9);
+  box-shadow: 0 0 12px 1px rgba(0, 0, 0, 0.9);
   -webkit-animation-duration: 0.4s;
   animation-duration: 0.4s;
 }
 .imh-6310-hover-content * {
   text-decoration: none !important;
+}
+.imh-6310-close-button {
+  background-repeat: no-repeat;
+  position: absolute;
+  cursor: pointer;
+  z-index: 9999999;
+}
+.imh-6310-popup {
+  float: left;
+  padding: 0 0 50px !important;
+  margin: 0 !important;
+  /* line-height: 0!important; */
+}
+.imh-6310-slider-content {
+  width: 100%;
+}
+.imh-6310-annotation-box-wrapper{
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: 1 1 100% !important;
+  position: relative;
+}
+.imh-6310-builder-box-divider{
+  width: 100%;
+  height: 1px;
+  background: #bfbfbf;
 }

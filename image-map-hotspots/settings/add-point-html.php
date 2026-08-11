@@ -1,7 +1,7 @@
 <div id="imh-6310-add-point" class="imh-6310-modal imh-6310-hide">
   <div class="imh-6310-modal-content imh-6310-modal-lg">
     <div class="imh-6310-modal-header">
-      Marker Settings
+      Marker Settings <span class="imh-6310-pro-text">In the free version, you can add a maximum of four tooltip/pointer.</span>
       <div class="imh-6310-close">&times;</div>
     </div>
 
@@ -11,20 +11,21 @@
         <li data-id="2">Content</li>
         <li data-id="3">link</li>
       </ul>
+
       <div class="imh-6310-modal-body-form">
         <div class="tabbed-content-wrap">
           <div class="imh-6310-tab imh-6310-tab-1">
             <table border="0" width="100%" cellpadding="10" cellspacing="0">
               <tr>
-                <td class='imh-6310-width-150'><b>Marker Type:</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Marker Type:</label></td>
                 <td>
                   <input type="radio" name='icontype' class='imh-6310_icon_type' value='1' checked /> Font Awesome Icon
-                  <input type="radio" name='icontype' class="imh-6310_icon_type" value='2' /> Custom Icon <span class="imh-6310-pro">(Pro)</span>
-                  <input type="radio" name='icontype' class='imh-6310_icon_type' value='3' /> Text <span class="imh-6310-pro">(Pro)</span>
+                  <input type="radio" name='icontype' class="imh-6310_icon_type" value='2' /> Custom Icon
+                  <input type="radio" name='icontype' class='imh-6310_icon_type' value='3' /> Text
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
-                <td class='imh-6310-width-150'><b>Icons:</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Icons:</label></td>               
                 <td>
                   <input type="text" name="icons" id="icons-1" class="imh-6310-form-input lg icons-1" placeholder="fas fa-map-marker-alt" data-value="fas fa-map-marker-alt" readonly="">
                   <div class="imh-6310-plus-icons" data-id='icons-1'><i class="fas fa-plus-circle"></i></div>
@@ -33,7 +34,7 @@
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
-                <td class='imh-6310-width-150'><b>Hover Icons:</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Hover Icons:</label></td>
                 <td>
                   <input type="text" name="hovericons" id="icons-2" class="imh-6310-form-input lg icons-2" placeholder="fas fa-map-marker-alt" data-value="fas fa-map-marker-alt" readonly="">
                   <div class="imh-6310-plus-icons" data-id='icons-2'><i class="fas fa-plus-circle"></i></div>
@@ -42,47 +43,60 @@
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
-                <td class='imh-6310-width-150'><b>Icon Color:</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Icon Color:</label></td>
                 <td>
                   <input type="text" name="imh_6310_fontawesome_icon_color" class="imh_6310_fontawesome_icon_color imh-6310-form-input imh_6310_color_picker" data-format="rgb" data-opacity="0.8" data-value="rgba(255, 28, 3, 0.99)">
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
-                <td class='imh-6310-width-150'><b>Icon Hover Color:</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Icon Hover Color:</label></td>
                 <td>
                   <input type="text" name="imh_6310_fontawesome_icon_hover_color" class="imh-6310-form-input imh_6310_color_picker imh_6310_fontawesome_icon_hover_color" data-opacity="0.8" data-format="rgb" data-value="rgba(255, 28, 3, 0.99)">
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
-                <td class='imh-6310-width-150'><b>Icon size in Desktop:</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Icon size in desktop:</label></td>
                 <td>
-                  <input type="number" min='20' max="" name="imh-6310_icon_size" class="imh-6310-form-input imh-6310_icon_size" data-value="30">
+                  <input type="number" min='0' max="" name="imh-6310_icon_size" class="imh-6310-form-input imh-6310_icon_size" data-value="30">
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
-                <td class='imh-6310-width-150'><b>Icon size in Mobile  <span class="imh-6310-pro">(Pro)</span> :</label></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Icon size in iPad:</label></td>
+                <td>
+                  <input type="number" min='0' max="" name="imh-6310_icon_size_in_ipad" class="imh-6310-form-input imh-6310_icon_size_in_ipad" data-value="20">
+                </td>
+              </tr>
+              <tr height="40px" class="imh-6310-form-icon imh-6310-marker imh-6310-marker-type-1">
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Icon size in Mobile:</label></td>
                 <td>
                   <input type="number" min='0' max="" name="imh-6310_icon_size_in_mobile" class="imh-6310-form-input imh-6310_icon_size_in_mobile" data-value="20">
                 </td>
               </tr>
+
               <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">
-                <td class='imh-6310-width-150'><b>Custom Icon/Image <span class="imh-6310-pro">(Pro)</span> :</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Custom Icon/Image:</label></td>
                 <td>
                   <input type="text" name="image" id="imh-6310-image-edit-1" class="imh-6310-form-input imh-6310-image-edit-1" value="">
-                  <input type="button" value="Upload Image" class="imh-6310-btn-default imh-6310-icon-upload custom-icon-image" data-id="imh-6310-image-edit-1" data-value=''>
+                  <input type="button" value="Upload Image" class="imh-6310-btn-default imh-6310-icon-upload custom-icon-image" data-id="imh-6310-image-edit-1">
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">
-                <td class='imh-6310-width-150'><b>Custom Hover Icon/Image <span class="imh-6310-pro">(Pro)</span> :</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Custom Hover Icon/Image:</label></td>
                 <td>
                   <input type="text" name="hoverimage" id="imh-6310-image-edit-2" class="imh-6310-form-input imh-6310-image-edit-2" value="">
-                  <input type="button" value="Upload Hover Image" class="imh-6310-btn-default imh-6310-icon-upload custom-icon-image" data-id="imh-6310-image-edit-2" data-value=''>
+                  <input type="button" value="Upload Hover Image" class="imh-6310-btn-default imh-6310-icon-upload custom-icon-image" data-id="imh-6310-image-edit-2">
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">
-                <td class='imh-6310-width-150'><b>Image / icon Size in Desktop<span class="imh-6310-pro">(Pro)</span> :</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label">Image / icon Size in Desktop:</label></td>
                 <td>
                   <input type="number" min='0' max="" name="img_or_icon_size" class="imh-6310-form-input img_or_icon_size" data-value="30">
+                </td>
+              </tr>
+              <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label">Image / icon Size in iPad:</label></td>
+                <td>
+                  <input type="number" min='0' max="" name="img_or_icon_size_in_ipad" class="imh-6310-form-input img_or_icon_size_in_ipad" data-value="25">
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-2 imh-6310-hide">
@@ -92,25 +106,25 @@
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-marker  imh-6310-marker-type-3 imh-6310-hide">
-                <td class='imh-6310-width-150'><b>Text <span class="imh-6310-pro">(Pro)</span> :</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="icons">Text:</label></td>
                 <td>
                   <input type="text" name="icons" id="imh-6310_custom_enter_text" class="imh-6310-form-input lg imh-6310_custom_enter_text" data-value="Hover here">
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-3 imh-6310-hide">
-                <td class='imh-6310-width-150'><b>Font Size <span class="imh-6310-pro">(Pro)</span> :</b></td>
+                <td class='imh-6310-width-150'><b>Font Size:</b></td>
                 <td>
                   <input type="number" min="0" class="imh-6310-form-input imh_6310_custom_text_font_size" data-value="16" step="1" />
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-3 imh-6310-hide">
-                <td><b>Font Color <span class="imh-6310-pro">(Pro)</span> :</b></td>
+                <td><b>Font Color:</b></td>
                 <td>
                   <input type="text" class="imh-6310-form-input imh_6310_color_picker imh_6310_custom_text_font_color" data-format="rgb" data-value="rgb(255, 255, 255)">
                 </td>
               </tr>
               <tr class="imh-6310-marker imh-6310-marker-type-3 imh-6310-hide">
-                <td><b>Background Color <span class="imh-6310-pro">(Pro)</span> :</b></td>
+                <td><b>Background Color:</b></td>
                 <td>
                   <input type="text" class="imh-6310-form-input imh_6310_color_picker imh_6310_custom_text_font_bg_color" data-format="rgb" data-opacity="0.8" data-value="rgba(2, 59, 92, 0.99)">
                 </td>
@@ -120,53 +134,61 @@
               <tr>
                 <td class='imh-6310-width-150'><b>Blinking Tooltip:</b></td>
                 <td>
-                  <input type="radio" name='blinktype' class='imh-6310_blink_type' value='1' checked /> Yes
-                  <span class="imh-6310-pro">(Pro)</span>
-                  <input type="radio" name='blinktype' class="imh-6310_blink_type" value='2' />No <span class="imh-6310-pro">(Pro)</span>                
+                  <input type="radio" name='blinktype' class='imh-6310_blink_type' value='1' checked /> Yes                  
+                  <input type="radio" name='blinktype' class="imh-6310_blink_type" value='2' /> No                
                 </td>
               </tr>
               <tr height="40px" class="imh-6310-form-icon imh_6310_icon_glow_color">
-                <td class='imh-6310-width-150'><b>Color:</b></td>
+                <td class='imh-6310-width-150'><b>Color:</b><br>                
+              </td>                
                 <td>
-                  <input type="text" name="imh_6310_fontawesome_icon_glow_color" class="imh-6310-form-input imh_6310_color_picker imh_6310_fontawesome_icon_glow_color" data-format="rgb" data-opacity="0.8" data-value="rgb(255, 0, 0)">
+                  <input type="text" name="imh-6310-form-input imh_6310_color_picker imh_6310_fontawesome_icon_glow_color" class="imh-6310-form-input imh_6310_color_picker imh_6310_fontawesome_icon_glow_color" data-format="rgb" data-opacity="0.8" data-value="rgb(255, 0, 0)">
                 </td>
               </tr>
-        
+              <tr>
+                <td class='imh-6310-width-150'><b>Always Visible:</b></td>
+                <td>
+                  <input type="radio" name='always_show' class='imh-6310_always_show' value='1' /> Yes                  
+                  <input type="radio" name='always_show' class="imh-6310_always_show" value='2' checked /> No                
+                </td>
+              </tr>  
             </table>
           </div>
           <div class="imh-6310-tab imh-6310-tab-2">
           <table border="0" width="100%" cellpadding="10" cellspacing="0">
             <tr>
-              <td class='imh-6310-width-150'><b class="imh-6310-form-label">Element Type:</b></td>
+              <td class='imh-6310-width-150'><label class="imh-6310-form-label">Element Type:</label></td>
               <td>
                 <input class='imh-6310-section-select' value='1' type="radio" name="popover_new" checked />Tooltip
-                <input class='imh-6310-section-select' value='2' type="radio" name="popover_new">Embedded code <span class="imh-6310-pro">(Pro)</span>
-                <input class='imh-6310-section-select' value='3' type="radio" name="popover_new">Custom code <span class="imh-6310-pro">(Pro)</span>
-                <input class='imh-6310-section-select' value='5' type="radio" name="popover_new">WooCommerce Products<span class="imh-6310-pro">(Pro)</span> 
-                <input class='imh-6310-section-select' value='6' type="radio" name="popover_new">ShortCode<span class="imh-6310-pro">(Pro)</span>
+                <input class='imh-6310-section-select' value='2' type="radio" name="popover_new">Embedded code
+                <input class='imh-6310-section-select' value='3' type="radio" name="popover_new">Custom code
+                <input class='imh-6310-section-select' value='5' type="radio" name="popover_new">WooCommerce Products
+                <input class='imh-6310-section-select' value='4' type="radio" name="popover_new">Direct Link
+                <input class='imh-6310-section-select' value='6' type="radio" name="popover_new">ShortCode
               </td>
-            </tr>          
+            </tr> 
+         
           </table>
             <div class="imh-6310-templates imh-6310-hide">
               <table border="0" width="100%" cellpadding="10" cellspacing="0">
             
                 <tr class="">
-                  <td class='imh-6310-width-150'><b class="imh-6310-form-label" > Select Template: </b></td>
+                  <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture"> Select Template:</label></td>
                   <td>
                     <div class="imh-6310-tooltip_img_section">
-                      <div class="imh-6310-tooltip-img imh-6310-tooltip-img-css imh-6310-type-1" data-id='01'>
+                      <div class="imh-6310-tooltip-img imh-6310-type-1" data-id='01'>
                         <img src="<?php echo imh_6310_plugin_dir_url . 'assets/images/1.png' ?>" data-template='template-01' alt="First Img">
                       </div>
-                      <div class="imh-6310-tooltip-img-css  imh-6310-tooltip-img imh-6310-tooltip-img-pro imh-6310-type-2 " data-id='02'>
+                      <div class="imh-6310-tooltip-img imh-6310-type-2 " data-id='02'>
                         <img src="<?php echo imh_6310_plugin_dir_url . 'assets/images/2.png' ?>" alt="First Img">
                       </div>
-                      <div class="imh-6310-tooltip-img-css imh-6310-tooltip-img-pro imh-6310-type-1" data-id='03'>
+                      <div class="imh-6310-tooltip-img imh-6310-type-1" data-id='03'>
                         <img src="<?php echo imh_6310_plugin_dir_url . 'assets/images/3.png' ?>" alt="First Img">
                       </div>
-                      <div class="imh-6310-tooltip-img-css imh-6310-tooltip-img-pro imh-6310-type-1" data-id='04'>
+                      <div class="imh-6310-tooltip-img imh-6310-type-1" data-id='04'>
                         <img src="<?php echo imh_6310_plugin_dir_url . 'assets/images/4.png' ?>" alt="First Img">
                       </div>
-                      <div class="imh-6310-tooltip-img-css imh-6310-tooltip-img-pro imh-6310-type-1 " data-id='05'>
+                      <div class="imh-6310-tooltip-img imh-6310-type-1 " data-id='05'>
                         <img src="<?php echo imh_6310_plugin_dir_url . 'assets/images/5.png' ?>" alt="First Img">
                       </div>
                     </div>
@@ -177,45 +199,46 @@
             <div class="imh-6310-tooltip-link imh-6310-hide">
               <table border="0" width="100%" cellpadding="10" cellspacing="0">
                 <tr>
-                  <td class='imh-6310-width-150'><b class="imh-6310-form-label" >Title Content:</b></td>
+                  <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Hover Content:</label></td>
                   <td>
                     <input type="text" data-value="Tooltip text" class="imh_6310_link_text">
                   </td>
                 </tr>
 
                 <tr>
-                  <td class='imh-6310-width-150'><b class="imh-6310-form-label" >Open in Popup <span class="imh-6310-pro">(Pro)</span>:</b></td>
+                  <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Open in Popup:</label></td>
                   <td>
-                    <input name="imh-6310-open-popup" class="imh-6310-open-popup" value='2' type="radio" checked>Popup Embedded <span class="imh-6310-pro">(Pro)</span>
-                    <input name="imh-6310-open-popup" class="imh-6310-open-popup" value='3' type="radio" checked>Popup Custom Code <span class="imh-6310-pro">(Pro)</span>
+                    <input name="imh-6310-open-popup" class="imh-6310-open-popup" value='2' type="radio" checked>Popup Embedded
+                    <input name="imh-6310-open-popup" class="imh-6310-open-popup" value='3' type="radio" checked>Popup Custom Code
                     <input name="imh-6310-open-popup" class="imh-6310-open-popup" value='1' type="radio">No
                   </td>
                 </tr>
                 <tr class="tooltip-embedded imh-6310-hide">
-                  <td class='imh-6310-width-150'><b class="imh-6310-form-label" > Enter Embedded Code <span class="imh-6310-pro">(Pro)</span>:</b></td>
+                  <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture"> Enter Embedded Code:</label></td>
                   <td>
-                    <textarea class="imh_6310_custom_code_popup-html" name="imh_6310_custom_code_popup" placeholder="" cols="90" rows="5" placeholder="This template avaiable on pro only." readonly  ></textarea>
+                    <textarea class="imh_6310_custom_code_popup-html" name="imh_6310_custom_code_popup" placeholder="" cols="90" rows="5"  ></textarea>
                   </td>
                 </tr>
                 <tr class="tooltip-custom-code imh-6310-hide">
-                  <td class='imh-6310-width-150'><b>Popup Max Width</b> <span class="imh-6310-pro">(Pro)</span></td>
+                  <td class='imh-6310-width-150'><b>Popup Max Width</b></td>
                   <td>
-                    <input type="text" name="imh_6310_custom_popup_width" id="imh_6310_custom_popup_width" class="imh_6310_custom_popup_width" placeholder="Custom popup width" readonly >                  
+                    <input type="text" name="imh_6310_custom_popup_width" id="imh_6310_custom_popup_width" class="imh_6310_custom_popup_width" placeholder="Custom popup width" >                  
                   </td>
                 </tr> 
                 <tr class="tooltip-custom-code imh-6310-hide">
-                  <td class='imh-6310-width-150'><b>HTML Code</b> <span class="imh-6310-pro">(Pro)</span></td>
+                  <td class='imh-6310-width-150'><b>HTML Code</b></td>
                   <td>
-                    <textarea name="imh_6310_popup_custom_html" id="imh_6310_popup_custom_html" class="imh_6310_popup_custom_html" cols="90" rows="5" data-value='' readonly></textarea>
+                    <textarea name="imh_6310_popup_custom_html" id="imh_6310_popup_custom_html" class="imh_6310_popup_custom_html" cols="90" rows="5" data-value=''></textarea>
                     <a href="https://wpmart.org/image-hotspot-templates-01-10/" target="_blank" class='imh-6310-custom-code-url'>Get build in custom code for tooltip / popup</a>
                   </td>
                 </tr> 
                 <tr class="tooltip-custom-code imh-6310-hide">
-                  <td class='imh-6310-width-150'><b>CSS Code</b> <span class="imh-6310-pro">(Pro)</span></td>
+                  <td class='imh-6310-width-150'><b>CSS Code</b></td>
                   <td>
-                    <textarea name="imh_6310_popup_custom_css" id="imh_6310_popup_custom_css" class="imh_6310_popup_custom_css" cols="90" rows="5" data-value='' readonly></textarea>
+                    <textarea name="imh_6310_popup_custom_css" id="imh_6310_popup_custom_css" class="imh_6310_popup_custom_css" cols="90" rows="5" data-value=''></textarea>
                   </td>
                 </tr> 
+               
               </table>
             </div>
             <?php include imh_6310_plugin_url . "settings/template-settings.php"; ?>
@@ -223,34 +246,63 @@
           
           <div class="imh-6310-tab imh-6310-tab-3">
             <table border="0" width="100%" cellpadding="10" cellspacing="0">
-              <tr>
-                <td class='imh-6310-width-150'><b>Do you Link Title?:</b></td>
+              <tr class='imh-6310_link-type'>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Do you Link Title?:</label></td>
                 <td>
                   <input class='imh-6310_link_title_type' value='1' type="radio" name="link_title">Yes
                   <input class='imh-6310_link_title_type' value='2' type="radio" name="link_title" checked>No
                 </td>
               </tr>
               <tr class="imh-6310_link">
-                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Link with <span class="imh-6310-pro">(Pro)</span>:</label></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Link with:</label></td>
                 <td>
                   <input name="imh-6310-link-position" class="imh-6310-link-position" value='1' type="radio" checked>Tooltip
                   <input name="imh-6310-link-position" class="imh-6310-link-position" value='2' type="radio">Pointer
                 </td>
               </tr>
               <tr class="imh-6310_link">
-                <td class='imh-6310-width-150'><b>Title Link Url:</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Title Link Url:</label></td>
                 <td>
                   <input type="text" class="imh_6310_custom_link_url" data-value="www.wpmart.org">
                 </td>
               </tr>
               <tr class="imh-6310_link">
-                <td class='imh-6310-width-150'><b>Open new tab:</b></td>
+                <td class='imh-6310-width-150'><label class="imh-6310-form-label" for="picture">Open new tab:</label></td>
                 <td>
                   <input name="imh-6310-open-new-tab" class="imh-6310-open-new-tab" value='1' type="radio" checked>Yes
                   <input name="imh-6310-open-new-tab" class="imh-6310-open-new-tab" value='2' type="radio">No
                 </td>
               </tr>             
             </table>
+          </div>
+
+          <div class="imh-6310-tab imh-6310-tab-5">
+              <br>
+              <div class="imh-6310-selected-product-list"></div>
+              <div class="imh-6310-form-label" style="margin-top: 15px !important;">Choose Product</div>
+              <?php
+                add_action('plugins_loaded', function() {
+                  if (class_exists('WooCommerce')) {
+                    $args = array(
+                      'limit' => -1, // Set to -1 to get all products
+                    );
+                    $products = wc_get_products($args);
+                    if (!empty($products)) {
+                      echo '<div class="imh-6310-search-container">';
+                        echo '<input type="text" id="imh-6310-product-search" placeholder="Type to search for products">';
+                        echo '<div class="imh-6310-suggestion-list imh-6310-hidden">';
+                          foreach ($products as $product) { 
+                            echo "<div class='imh-6310-product-list imh-6310-hidden' data-product-id='{$product->id}'>{$product->get_name()}</div>";      
+                          } 
+                        echo '</div>';
+                        echo '<div class="imh-6310-no-product imh-6310-hidden">No product found.</div>';
+                      echo '</div>';
+                    }
+                  } else {
+                      echo 'WooCommerce is not active.';
+                  }
+                });
+              ?>
           </div>
         </div>
       </div>

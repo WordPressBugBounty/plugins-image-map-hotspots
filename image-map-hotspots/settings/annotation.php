@@ -9,7 +9,8 @@
       
         <button class="imh-6310-btn-success imh-6310-upload-image">Upload Image</button>
         <button class="imh-6310-btn-success imh-6310-add-point">Add Point</button>
-        <span class='imh-6310-pro'>You can add maximum 6 pointer on free version.</span>
+        <span class="imh-6310-pro-text">In the free version, you can add a maximum of four tooltip/pointer.</span>
+
         <?php
         if(isset($_GET['styleid'])) {
             echo '<div class="shortcode">Shortcode <input type="text" class="imh-6310-6330-shortcode" onclick="this.setSelectionRange(0, this.value.length)" value="[imh_6310_image_map id=&quot;'.esc_attr($_GET['styleid']).'&quot;]"></div>';
@@ -24,6 +25,7 @@
           $counter = 1;
           foreach ($jsonData as $js) {
             $jsonCode = json_encode($js);        
+            $imagePointer = "";
             if($js->iconType == 1){
               if(!$js->fontAwesomeIcon && !$js->fontAwesomeHoverIcon){
                 return;
@@ -59,6 +61,7 @@
                 $customFirstImg = $js->customFirstImg;
                 $customSecondImg = $js->customSecondImg;
              }
+             $imagePointer = "imh-6310-point-icons-".esc_attr($counter);
               $points = "                          
                 <img src='{$customFirstImg}' class='imh-6310-pin-main-img imh-6310-blinking-{$counter}' />
                 <img src='{$customSecondImg}' class='imh-6310-pin-hover-img imh-6310-blinking-hover-{$counter}' />             
@@ -70,17 +73,23 @@
                 $customText = $js->customText;
               }
               $points = "                          
-              <div class='imh-6310-customtext imh-6310-blinking-{$counter}'>".esc_attr($customText)."</div>           
+                <div class='imh-6310-customtext imh-6310-blinking-{$counter}'>".esc_attr($customText)."</div>           
             ";
+          }
+
+          $tHeight = 0;
+          if(isset($js->tHeight)){
+            $tHeight = $js->tHeight;
           }
           
             echo "
-              <div data-id='".esc_attr($counter)."' data-json='".esc_attr($jsonCode)."' class='imh-6310-drag imh-6310-point-{$counter} ui-widget-content ui-draggable ui-draggable-handle' style='bottom: {$js->yPos}%' data-position='{$js->xPos}-{$js->yPos}-{$js->tWidth}-{$js->iconWidth}'>
+              <div data-id='".esc_attr($counter)."' data-json='".esc_attr($jsonCode)."' class='imh-6310-drag imh-6310-point-{$counter} ui-widget-content ui-draggable ui-draggable-handle' style='bottom: {$js->yPos}%' data-position='{$js->xPos}-{$js->yPos}-{$js->tWidth}-{$js->iconWidth}-{$tHeight}'>
               <div class='imh-6310-point-editor'>
-                <div class='imh-6310-point-edit'><i class='far fa-edit'></i></div>
-                <div class= 'imh-6310-point-remove'><i class='fas fa-trash-alt'></i></div>
+                <div class='imh-6310-point-edit' title='Edit'><i class='far fa-edit'></i></div>
+                <div class='imh-6310-point-clone' title='Clone/Duplicate'><i class='fas fa-clone'></i></div>
+                <div class= 'imh-6310-point-remove' title='Delete'><i class='fas fa-trash-alt'></i></div>
               </div>
-              <div class='imh-6310-point-icons imh-6310-point-icons-".esc_attr($counter)."'>
+              <div class='imh-6310-point-icons {$imagePointer}'>
                 {$points}
               </div>  
             </div>";
@@ -122,8 +131,7 @@
                   border-radius: 50%;
                   transform: translate(-50%, -50%);
                   top: 50%;
-                  left: 50%;
-                  border-radius: 50%;
+                  left: 50%;                
                   pointer-events: none;
                 }
                 
@@ -141,45 +149,45 @@
               $pointCssCode .= "
               .imh-6310-point-{$counter} .imh-6310-pin-main-img {
                width:".esc_attr($js->imgOrIconSize)."px !important;
-               height: auto !important;  
-               border-radius: 50%;         
+               height:".esc_attr($js->imgOrIconSize)."px !important;
+               border-radius: 50%;
               }
               .imh-6310-point-{$counter} .imh-6310-pin-hover-img {
                width:".esc_attr($js->imgOrIconSize)."px !important;
-               height: auto !important; 
+               height: ".esc_attr($js->imgOrIconSize)."px !important; 
                border-radius: 50%;
               }
             ";
             if(isset($js->blinkTooltip) && $js->blinkTooltip == 1){
-              $pointCssCode .= "
-              .imh-6310-point-icons-".esc_attr($counter)."::after {
-                content: '';
-                position: absolute;
-                width: ".esc_attr($js->imgOrIconSize + 10)."px;
-                height: ".esc_attr($js->imgOrIconSize + 10)."px;
-                box-shadow: 0 0 1px 3px white;
-                animation: pulse-animation-{$counter} 2s infinite;
-                display: block;  
-                border-radius: 50%;                
-                transform: translate(-50%, -50%);
-                top: 50%;
-                left: 50%;                
-                pointer-events: none;
-              }
-              
-              @keyframes pulse-animation-{$counter} {
-                0% {
-                  box-shadow: 0 0 0 0px {$js->glowColor};
+                $pointCssCode .= "
+                .imh-6310-point-icons-".esc_attr($counter)."::after {
+                  content: '';
+                  position: absolute;
+                  width: ".esc_attr($js->imgOrIconSize + 10)."px;
+                  height: ".esc_attr($js->imgOrIconSize + 10)."px;
+                  box-shadow: 0 0 1px 3px white;
+                  animation: pulse-animation-{$counter} 2s infinite;
+                  display: block;  
+                  border-radius: 50%;                
+                  transform: translate(-50%, -50%);
+                  top: 50%;
+                  left: 50%;                
+                  pointer-events: none;
                 }
-                100% {
-                  box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+                
+                @keyframes pulse-animation-{$counter} {
+                  0% {
+                    box-shadow: 0 0 0 0px {$js->glowColor};
+                  }
+                  100% {
+                    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+                  }
                 }
-              }
               ";
             }
             }else if ($js->iconType == 3) {
               $pointCssCode .= "
-              .imh-6310-point-{$counter} span {
+              .imh-6310-point-{$counter} .imh-6310-customtext {
                 font-size:".esc_attr($js->customTextSize)."px !important;
                 color: ".esc_attr($js->customTextColor)." !important;
                 background-color:".esc_attr($js->customTextBgColor)." !important;
@@ -187,19 +195,19 @@
               }             
             ";
             if(isset($js->blinkTooltip) && $js->blinkTooltip == 1){
-              $pointCssCode .=".imh-6310-blinking-{$counter} {
-                animation: pulse-animation-{$counter} 2s infinite;
-              }
-              
-              @keyframes pulse-animation-{$counter} {
-                0% {
-                  box-shadow: 0 0 0 0px {$js->glowColor};
-                }
-                100% {
-                  box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
-                }
-              }";
+            $pointCssCode .=".imh-6310-blinking-{$counter} {
+              animation: pulse-animation-{$counter} 2s infinite;
             }
+            
+            @keyframes pulse-animation-{$counter} {
+              0% {
+                box-shadow: 0 0 0 0px {$js->glowColor};
+              }
+              100% {
+                box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+              }
+            }";
+          }
             }           
 
             wp_register_style( "imh-6310-template-".esc_attr($counter)."-css", "" );
