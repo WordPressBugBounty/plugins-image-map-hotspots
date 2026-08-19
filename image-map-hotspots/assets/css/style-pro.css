@@ -1708,17 +1708,18 @@ input[type="week"] {
   color: #F00;
   margin-left: 25px;
   display: inline-block;
+  font-weight: 600;
   animation: imh-6310-text-color 3s infinite;
 }
 
 @keyframes imh-6310-text-color {
   0% {
-    color: #F00;
+    color: #ff2d2d;
   }
   50% {
-    color: #000;
+    color: #c90000;
   }
   100% {
-    color: #F00;
+    color: #ff2d2d;
   }
 }

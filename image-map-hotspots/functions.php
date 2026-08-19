@@ -110,10 +110,11 @@ function imh_6310_check_field_exists(){
       $charset_collate = $wpdb->get_charset_collate();
 
       $sql = "CREATE TABLE IF NOT EXISTS $style_table (
-      id int UNSIGNED NOT NULL AUTO_INCREMENT,
-      name varchar(100) DEFAULT NULL,
-      css LONGTEXT DEFAULT NULL,
-      PRIMARY KEY  (id)
+        id int UNSIGNED NOT NULL AUTO_INCREMENT,
+        name varchar(100) DEFAULT NULL,
+        display_type int DEFAULT 0,
+        css LONGTEXT DEFAULT NULL,
+        PRIMARY KEY  (id)
       ) $charset_collate;";
 
 

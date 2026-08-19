@@ -45,6 +45,9 @@ function imh_6310_onAnnotationInView() {
 
 jQuery(window).on("load", function () {
   imh_6310_onAnnotationInView();
+  setTimeout(function () {
+    imh_6310_adjust_position();
+  }, 500);
 });
 
 window.addEventListener("resize", function (event) {
